@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
 
+[RequireComponent(typeof(PlayerInput))]
 public class PCameraController : MonoBehaviour
 {
     public Vector2 swivelSpan;
@@ -60,7 +61,7 @@ public class PCameraController : MonoBehaviour
 
     public void OnLookBack(InputValue value)
     {
-        m_LookBack = value.Get<float>() > 0.5f;
+        m_LookBack = value.Get<float>() > 0.5f;   
         Debug.Log(m_LookBack);
     }
 }

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -613,8 +613,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1436743442}
+  - component: {fileID: 1436743446}
   - component: {fileID: 1436743443}
   - component: {fileID: 1436743444}
+  - component: {fileID: 1436743445}
   m_Layer: 0
   m_Name: Kart
   m_TagString: Untagged
@@ -685,7 +687,7 @@ MonoBehaviour:
   - m_PersistentCalls:
       m_Calls: []
     m_ActionId: d401f8f9-7cc1-44eb-aeea-3675869cbff6
-    m_ActionName: Kart/Accelerate[/Keyboard/w,/DualShock4GamepadHID/buttonEast]
+    m_ActionName: Kart/Accelerate[/Keyboard/w]
   - m_PersistentCalls:
       m_Calls: []
     m_ActionId: 3734f5a7-44da-4564-85de-8b067152ce3b
@@ -693,40 +695,106 @@ MonoBehaviour:
   - m_PersistentCalls:
       m_Calls: []
     m_ActionId: 39534c85-d471-4a06-9c5b-0d8ab280b8e9
-    m_ActionName: Kart/Handbrake[/Keyboard/leftShift,/DualShock4GamepadHID/rightShoulder]
+    m_ActionName: Kart/Handbrake[/Keyboard/leftShift]
   - m_PersistentCalls:
       m_Calls: []
     m_ActionId: 90e66c67-73e2-4827-95bb-f8bbed018f4d
-    m_ActionName: Kart/Steer[/Keyboard/a,/Keyboard/d,/DualShock4GamepadHID/leftStick/x]
+    m_ActionName: Kart/Steer[/Keyboard/a,/Keyboard/d]
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1436743443}
+        m_MethodName: OnLookBack
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: 1a126b87-165b-4c34-be3e-b97f6a9dcf9e
-    m_ActionName: Kart/LookBack[/Keyboard/space,/DualShock4GamepadHID/buttonNorth]
+    m_ActionName: Kart/LookBack[/Keyboard/space]
   - m_PersistentCalls:
       m_Calls: []
     m_ActionId: 31d7296f-57fe-44e5-a537-97900370af4f
-    m_ActionName: Kart/UseItem[/Keyboard/q,/DualShock4GamepadHID/leftShoulder]
+    m_ActionName: Kart/UseItem[/Keyboard/q]
   - m_PersistentCalls:
       m_Calls: []
     m_ActionId: 1bbb1755-401e-47f1-ab11-601328bd327b
-    m_ActionName: Kart/ItemDirectionModifier[/Keyboard/downArrow,/Keyboard/upArrow,/DualShock4GamepadHID/leftStick/y]
+    m_ActionName: Kart/ItemDirectionModifier[/Keyboard/downArrow,/Keyboard/upArrow]
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1436743443}
+        m_MethodName: OnCameraSwivel
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: a4452ee5-0dc1-42ef-9e8d-1bc2476dd799
-    m_ActionName: Kart/CameraSwivel[/DualShock4GamepadHID/rightStick]
+    m_ActionName: Kart/CameraSwivel
   - m_PersistentCalls:
       m_Calls: []
     m_ActionId: e36aa4dc-031c-4a89-b3ba-68d9b5729b46
-    m_ActionName: Kart/Lean[/Keyboard/w,/Keyboard/s,/Keyboard/a,/Keyboard/d,/DualShock4GamepadHID/leftStick]
+    m_ActionName: Kart/Lean[/Keyboard/w,/Keyboard/s,/Keyboard/a,/Keyboard/d]
   - m_PersistentCalls:
       m_Calls: []
     m_ActionId: 1fbbd13a-aea4-42c5-94f4-f3cecd13c231
-    m_ActionName: Kart/Trick[/Keyboard/leftCtrl,/DualShock4GamepadHID/rightShoulder]
+    m_ActionName: Kart/Trick[/Keyboard/leftCtrl]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Kart
   m_SplitScreenIndex: -1
-  m_Camera: {fileID: 963194227}
+  m_Camera: {fileID: 0}
+--- !u!54 &1436743445
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1436743441}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!114 &1436743446
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1436743441}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc6b5502459194c4fbc87d7de345c516, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxForwardSpeed: 10
+  forwardAcceleration: 5
+  maxBackwardSpeed: 7
+  backwardAcceleration: 5
+  boostingSpeed: 20
+  boostingAcceleration: 50
+  kartWeight: 1
+  cofMultiplier: 1
+  hopSpeed: 10
+  insideDrift: 1
+  driftTightness: 3
+  requiredCharge: 250
+  tightChargeRate: 150
+  looseChargeRate: 50
+  driftTightnessThreshold: 0.5
+  hopExtensionTime: 0.1
 --- !u!1 &1526128689
 GameObject:
   m_ObjectHideFlags: 0
@@ -945,6 +1013,26 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1549964425}
   m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1781020884 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8051415255134806348, guid: 004f3729b60e1344dbae008119b01ead,
+    type: 3}
+  m_PrefabInstance: {fileID: 1812761767}
+  m_PrefabAsset: {fileID: 0}
+--- !u!64 &1781020888
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1781020884}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Convex: 0
+  m_CookingOptions: 14
+  m_Mesh: {fileID: -462981019419857548, guid: 004f3729b60e1344dbae008119b01ead, type: 3}
 --- !u!1001 &1812761767
 PrefabInstance:
   m_ObjectHideFlags: 0

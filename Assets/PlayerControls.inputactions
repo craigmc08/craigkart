@@ -1,5 +1,5 @@
 {
-    "name": "PlayerInput",
+    "name": "PlayerControls",
     "maps": [
         {
             "name": "Kart",
@@ -14,7 +14,7 @@
                     "interactions": ""
                 },
                 {
-                    "name": "Deccelerate",
+                    "name": "Decelerate",
                     "type": "Value",
                     "id": "3734f5a7-44da-4564-85de-8b067152ce3b",
                     "expectedControlType": "Analog",
@@ -22,8 +22,8 @@
                     "interactions": ""
                 },
                 {
-                    "name": "Handbrake",
-                    "type": "Button",
+                    "name": "Hop",
+                    "type": "Value",
                     "id": "39534c85-d471-4a06-9c5b-0d8ab280b8e9",
                     "expectedControlType": "",
                     "processors": "",
@@ -39,9 +39,9 @@
                 },
                 {
                     "name": "LookBack",
-                    "type": "Button",
+                    "type": "Value",
                     "id": "1a126b87-165b-4c34-be3e-b97f6a9dcf9e",
-                    "expectedControlType": "",
+                    "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
                 },
@@ -116,7 +116,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard",
-                    "action": "Deccelerate",
+                    "action": "Decelerate",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -127,7 +127,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard",
-                    "action": "Handbrake",
+                    "action": "Hop",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -138,7 +138,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Controller",
-                    "action": "Handbrake",
+                    "action": "Hop",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -380,12 +380,24 @@
         {
             "name": "Keyboard",
             "bindingGroup": "Keyboard",
-            "devices": []
+            "devices": [
+                {
+                    "devicePath": "<Keyboard>",
+                    "isOptional": false,
+                    "isOR": false
+                }
+            ]
         },
         {
             "name": "Controller",
             "bindingGroup": "Controller",
-            "devices": []
+            "devices": [
+                {
+                    "devicePath": "<Gamepad>",
+                    "isOptional": false,
+                    "isOR": false
+                }
+            ]
         }
     ]
 }
