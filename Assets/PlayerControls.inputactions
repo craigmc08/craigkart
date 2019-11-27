@@ -79,9 +79,9 @@
                 },
                 {
                     "name": "Trick",
-                    "type": "Button",
+                    "type": "Value",
                     "id": "1fbbd13a-aea4-42c5-94f4-f3cecd13c231",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": ""
                 }

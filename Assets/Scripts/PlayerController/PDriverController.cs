@@ -14,17 +14,24 @@ public class PDriverController : MonoBehaviour
     [Space(10)]
     public float boostingSpeed;
     public float boostingAcceleration;
+    [Space(10)]
+    public float frictionCoF;
+    public float gripFactor;
 
     [Header("Turning")]
     public float kartWeight = 1;
-    public float cofMultiplier = 1;
+    public float turningForce = 1;
     public float minTurnRadius = 1;
 
     [Header("Drifting/Hopping")]
     public float hopSpeed;
-    public bool insideDrift = true;
+    public float driftInitiateThreshold = 0.2f;
+    [Tooltip("After pressing the hop button, the hop will be remembered on the ground for this amount of time")]
+    public float hopExtensionTime = 0.1f;
+    public bool insideDrift = false;
     [Tooltip("Multiplies the maximum turning force by this value. Higher means tighter turns")]
     public float driftTightness = 3;
+    public Vector2 driftSteerRange;
 
     [Header("Mini-Turbo Charging")]
     public float requiredCharge = 250;
@@ -33,8 +40,15 @@ public class PDriverController : MonoBehaviour
     [Tooltip("If the steering input is higher than this value (adjusted for drift direction), then the turn is considered 'tight'.")]
     [Range(-1, 1)]
     public float driftTightnessThreshold = 0.5f;
-    [Tooltip("After pressing the hop button, the hop will be remembered on the ground for this amount of time")]
-    public float hopExtensionTime = 0.1f;
+
+    [Header("Physics")]
+    [Range(0,1)]
+    [Tooltip("Smoothing to apply to surface normal value")]
+    public float surfaceSmoothing = 0.2f;
+    [Space(10)]
+    public LayerMask groundLayerMask;
+    public Vector3 groundRayOffset;
+    public float groundRayLength;
 
     private float m_Accelerate = 0;
     private float m_Decelerate = 0;
@@ -47,13 +61,11 @@ public class PDriverController : MonoBehaviour
     private Rigidbody rb;
 
     // Driving stuff
-    float currentSpeed = 0;
-    float kartHeading = 0;
     Vector3 surfaceNormal = Vector3.up;
-    Vector3 surfaceTangent = Vector3.forward;
-    Vector3 velocity = Vector3.zero;
+    Vector3 surfaceForward = Vector3.forward;
 
     // Drifting stuff
+    bool lastHopVal = false;
     bool readyToDrift = false;
     float hoppedAt = 0;
 
@@ -69,26 +81,119 @@ public class PDriverController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        Vector3 alongFloorAtHeading = new Vector3(Mathf.Sin(kartHeading), Mathf.Cos(kartHeading));
-        surfaceTangent = Vector3.ProjectOnPlane(alongFloorAtHeading, surfaceNormal);
+        var velocity = rb.velocity;
 
-        float accelerationConstant = m_Accelerate - m_Decelerate;
-        float targetAcceleration = accelerationConstant * (accelerationConstant < 0 ? backwardAcceleration : forwardAcceleration);
+        // ROAD SURFACE
+        RaycastHit groundHit;
+        bool onGround = Physics.Raycast(transform.position + groundRayOffset, -surfaceNormal, out groundHit, groundRayLength, groundLayerMask.value);
+        if (onGround)
+        {
+            surfaceNormal = Vector3.Slerp(groundHit.normal, surfaceNormal, surfaceSmoothing);
+            surfaceForward = Vector3.ProjectOnPlane(surfaceForward, surfaceNormal).normalized;
+        }
 
-        currentSpeed += targetAcceleration * Time.fixedDeltaTime;
-        // velocity += targetAcceleration along surface tangent
-        // project velocity onto surface tangent
+        // DRIFTING
+        if (lastHopVal != m_Hop && m_Hop && !readyToDrift && !drifting)
+        {
+            // Only hop if the button was pressed this update
+            if (onGround)
+            {
+                velocity += surfaceNormal * hopSpeed;
+                hoppedAt = Time.time;
+            }
+            readyToDrift = true;
+        }
 
-        float groundFrictionAccel = 1;
-        float turningRadius = Mathf.Max(velocity.sqrMagnitude / groundFrictionAccel, minTurnRadius);
-        float angularSpeed = currentSpeed / turningRadius;
+        if (readyToDrift && onGround && Time.time > hoppedAt + hopExtensionTime)
+        {
+            if (Mathf.Abs(m_Steer) > driftInitiateThreshold)
+            {
+                // Initiate drift
+                drifting = true;
+                driftingRight = m_Steer > 0;
+                Debug.Log("starting drifting to the " + (driftingRight ? "right" : "left"));
+                miniTurboCharge = 0;
+            }
+            // Don't initiate drift
+            readyToDrift = false;
+        }
 
-        rb.angularVelocity = Vector3.up * angularSpeed;
-        rb.velocity = currentSpeed * surfaceNormal;
+        if (drifting && !m_Hop)
+        {
+            Debug.Log("stopping drift");
+            drifting = false;
+        }
 
-        Debug.Log(surfaceTangent + ", " + surfaceNormal + ", " + accelerationConstant + ", " + targetAcceleration + ", " + currentSpeed + ", " + turningRadius + ", " + angularSpeed + ", " + rb.velocity);
+        if (drifting)
+        {
+            var driftSteer = m_Steer * (driftingRight ? 1 : -1);
+
+            if (driftSteer > driftTightnessThreshold)
+            {
+                miniTurboCharge += tightChargeRate * Time.fixedDeltaTime;
+            } else
+            {
+                miniTurboCharge += looseChargeRate * Time.fixedDeltaTime;
+            }
+
+            if (miniTurboCharge > requiredCharge)
+            {
+                Debug.Log("MT charged!");
+            }
+        }
+
+
+        // ROTATION
+        // Minimum turn radius required to prevent div by 0 errors
+        float turnRadius = Mathf.Max(velocity.sqrMagnitude / turningForce, minTurnRadius);
+        float turnSpeed;
+        if (!drifting)
+        {
+            turnSpeed = velocity.magnitude / turnRadius * m_Steer;
+        } else
+        {
+            var steerMin = driftingRight ? driftSteerRange.x : -driftSteerRange.y;
+            var steerMax = driftingRight ? driftSteerRange.y : -driftSteerRange.x;
+            var driftSteer = Mathf.Lerp(steerMin, steerMax, (m_Steer + 1f) / 2f);
+            turnSpeed = velocity.magnitude / turnRadius * driftSteer * driftTightness;
+        }
+        surfaceForward = Quaternion.AngleAxis(turnSpeed * Mathf.Rad2Deg * Time.fixedDeltaTime, surfaceNormal) * surfaceForward;
+
+        Quaternion kartRotation = Quaternion.LookRotation(surfaceForward, surfaceNormal);
+        transform.rotation = kartRotation;
+
+        // MOVEMENT
+        var surfaceRight = Vector3.Cross(surfaceForward, surfaceNormal);
+
+        var friction = -velocity.normalized * frictionCoF;
+        var gripForce = Vector3.Dot(velocity, surfaceRight) * gripFactor * -surfaceRight;
+
+        var accelInput = m_Accelerate - m_Decelerate;
+        var acceleration = accelInput * (accelInput < 0 ? backwardAcceleration : forwardAcceleration) * surfaceForward;
+
+        var totalAcceleration = friction + gripForce + acceleration;
+        // All of this acceleration should be in the surface plane
+        totalAcceleration = Vector3.ProjectOnPlane(totalAcceleration, surfaceNormal);
+        velocity += totalAcceleration * Time.fixedDeltaTime;
+
+        var forwardsComponent = Vector3.Dot(velocity, surfaceForward);
+        var movingForwards = forwardsComponent > 0;
+
+        var upwardsComponent = Vector3.Dot(velocity, surfaceNormal);
+        var tangentialVelocity = velocity - upwardsComponent * surfaceNormal;
+        if (movingForwards && forwardsComponent > maxForwardSpeed)
+        {
+            tangentialVelocity *= maxForwardSpeed / forwardsComponent;
+        } else if (!movingForwards && forwardsComponent < -maxBackwardSpeed)
+        {
+            tangentialVelocity *= -maxBackwardSpeed / forwardsComponent;
+        }
+        velocity = tangentialVelocity + upwardsComponent * surfaceNormal;
+
+        rb.velocity = velocity;
 
         m_Trick = false;
+        lastHopVal = m_Hop;
     }
 
     public void OnAccelerate(InputValue value)
@@ -118,6 +223,6 @@ public class PDriverController : MonoBehaviour
 
     public void OnTrick(InputValue value)
     {
-        m_Trick = value.Get<bool>();
+        m_Trick = value.Get<float>() > 0.5f;
     }
 }
