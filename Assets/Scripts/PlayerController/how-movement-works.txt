@@ -24,7 +24,11 @@ acceleration/deceleration applies a force/acceleration along the car forward axi
 
 there is extra friction on the right/left car axis to lessen slipping. *note: when drifting, sliding friction (and all friction?) will be reduced significantly*
 
+NEW IDEA: grip force will be based on max turn acceleration. the grip force is enough to perfectly cancel out a turn. when drifting, grip force increases based on tightness for inside drift, but stays the same for outside drift (to allow slipping)
+
 ## drifting
+HAVE TO SERIOUSLY RETHING OUTSIDE DRIFT
+
 ### drift initiation
 the hop button is pressed. if on the ground, a small upwards (surface normal) force is applied launching the car into the air.
 if the hop button is pressed and there is a steering input with a magnitude greater than some threshold when the car lands, a drift is initiated in the current steering direction.
