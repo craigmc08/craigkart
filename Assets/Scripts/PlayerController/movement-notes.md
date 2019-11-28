@@ -1,13 +1,13 @@
 # car movement
 ## stuff that needs work
-- surface normal detection. it should be smoother on small transitions, but more sharp on faster transitions. the car angle should return to the last surface normal after leaving an obstacle (ramps and kin) and camera should only worry about surface normals (changes due to ramps and kin does not effect camera)
+- surface normal detection. it should be smoother on small transitions, but more sharp on faster transitions. this could be accomplished with an accelerating rotation. ~~the car angle should return to the last surface normal after leaving an obstacle (ramps and kin) and camera should only worry about surface normals (changes due to ramps and kin does not effect camera)~~
 - drifting needs work. and outside drift doesn't exist at all yet.
 - reconsider how turboing works, possibly. the slowdown after turboing is instantaneous, which doesn't feel very good.
 - wheelie-ing has to exist.
 - *when multi-car racing is added* slipstreaming needs to be implemented
 
 ## road surface
-a raycast can detect when the car is on the ground. the normal of the road surface is noted. this is the car up direction.
+collisions will be watched for the car. if it collides with something on the surface layer that has a `Surface` component, then the normal of the contact points will be used. all collision contact point each update will be considered and averaged to produce the surface and ground normals.
 
 ## turning
 the rotation of the car is updated to have the correct up direction. there is probably a unity built-in for this? as surface normal changes, current forward will be projected onto the new surface plane.

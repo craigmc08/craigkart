@@ -2,8 +2,12 @@
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(PlayerInput))]
+[RequireComponent(typeof(PDriverController))]
 public class PCameraController : MonoBehaviour
 {
+    [Range(0,1)]
+    public float cameraUpSmoothing = 0.8f;
+
     public Vector2 swivelSpan;
     public float yRestAngle;
     public Vector3 center;
@@ -15,19 +19,28 @@ public class PCameraController : MonoBehaviour
     public float smoothing = 0.2f;
 
     public Transform playerCamera;
+    public Transform cameraRotationEmpty;
 
     Vector2 m_CameraSwivel;
     Vector2 cameraSwivelValue;
 
     bool m_LookBack;
 
+    PDriverController controller;
+
     void Start()
     {
         m_CameraSwivel = Vector2.zero;
+        controller = GetComponent<PDriverController>();
     }
 
+    Vector3 groundNormal = Vector3.up;
     void Update()
     {
+        groundNormal = Vector3.Slerp(controller.GroundUp, groundNormal, cameraUpSmoothing);
+        Quaternion emptyRot = Quaternion.LookRotation(Vector3.ProjectOnPlane(controller.KartForward, groundNormal).normalized, groundNormal);
+        cameraRotationEmpty.rotation = emptyRot;
+
         cameraSwivelValue = Vector2.Lerp(cameraSwivelValue, m_CameraSwivel, 1f - smoothing);
 
         float yAngle = -cameraSwivelValue.y * swivelSpan.y * Mathf.Deg2Rad / 2 + yRestAngle * Mathf.Deg2Rad;

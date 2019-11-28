@@ -59,6 +59,7 @@ public class PDriverController : MonoBehaviour
     public LayerMask groundLayerMask;
 
     [Header("Wheels And Body")]
+    public Transform kartRotationEmpty;
     public Transform frontAxle;
     public Transform backAxle;
     public Transform steeringAssembly;
@@ -92,7 +93,8 @@ public class PDriverController : MonoBehaviour
     // Driving stuff
     public bool grounded = false;
     Vector3 contactNormal = Vector3.up;
-    Vector3 surfaceNormal = Vector3.up;
+    public Vector3 saveSurfaceNormal = Vector3.up;
+    public Vector3 surfaceNormal = Vector3.up;
     Vector3 surfaceForward = Vector3.forward;
 
     // Drifting stuff
@@ -122,7 +124,13 @@ public class PDriverController : MonoBehaviour
         var velocity = rb.velocity;
 
         // ROAD SURFACE
-        surfaceNormal = Vector3.Slerp(contactNormal, surfaceNormal, surfaceSmoothing);
+        if (grounded)
+        {
+            surfaceNormal = Vector3.Slerp(contactNormal, surfaceNormal, surfaceSmoothing);
+        } else
+        {
+            surfaceNormal = Vector3.Slerp(saveSurfaceNormal, surfaceNormal, surfaceSmoothing);
+        }
         surfaceForward = Vector3.ProjectOnPlane(surfaceForward, surfaceNormal).normalized;
 
         // DRIFTING
@@ -191,7 +199,7 @@ public class PDriverController : MonoBehaviour
         surfaceForward = Quaternion.AngleAxis(turnSpeed * Mathf.Rad2Deg * Time.fixedDeltaTime, surfaceNormal) * surfaceForward;
 
         Quaternion kartRotation = Quaternion.LookRotation(surfaceForward, surfaceNormal);
-        transform.rotation = kartRotation;
+        kartRotationEmpty.rotation = kartRotation;
 
         // MOVEMENT
         var surfaceRight = Vector3.Cross(surfaceForward, surfaceNormal);
@@ -254,6 +262,7 @@ public class PDriverController : MonoBehaviour
 
         UpdateParticles();
         UpdateTurbo();
+        UpdateSurfaceContacts();
     }
 
     void UpdateParticles()
@@ -375,34 +384,106 @@ public class PDriverController : MonoBehaviour
     }
 
     private ContactPoint[] surfaceContacts = new ContactPoint[16];
+    // Collect all contacts each update. There can be multiple CollisionStays per update
+    int groundContactLength = 0;
+    private ContactPoint[] groundContactsThisUpdate = new ContactPoint[64];
+    int surfaceContactLength = 0;
+    private ContactPoint[] surfaceContactsThisUpdate = new ContactPoint[64];
     public void OnCollisionStay(Collision col)
     {
         if (IsInLayerMask(groundLayerMask, col.gameObject.layer)) {
+            grounded = true;
+            var surface = col.gameObject.GetComponent<Surface>();
+            if (surface == null)
+            {
+                Debug.LogWarning("Object is in layer 'Surface' but has no Surface object associated with it. Ignoring the collision.");
+                return;
+            }
+
             // Find average direction of each contact normal
             int length = col.GetContacts(surfaceContacts);
-            Vector3 totalNormal = Vector3.zero;
             for (var i = 0; i < length; i++)
             {
-                totalNormal += surfaceContacts[i].normal;
+                if (surfaceContactLength >= surfaceContactsThisUpdate.Length)
+                {
+                    Debug.LogError("Surface Contact buffer out of space");
+                } else
+                {
+                    surfaceContactsThisUpdate[surfaceContactLength] = surfaceContacts[i];
+                    surfaceContactLength++;
+                }
+
+                if (surface.IsGround || surface.IsOffroad)
+                {
+                    if (groundContactLength >= groundContactsThisUpdate.Length)
+                    {
+                        Debug.LogError("Ground Contact buffer out of space");
+                    }
+                    else
+                    {
+                        groundContactsThisUpdate[groundContactLength] = surfaceContacts[i];
+                        groundContactLength++;
+                    }
+                }
             }
             grounded = true;
-            contactNormal = totalNormal.normalized;
         }
     }
 
-    public void OnCollisionEnter(Collision col)
+    void UpdateSurfaceContacts()
     {
-        if (IsInLayerMask(groundLayerMask, col.gameObject.layer))
-        {
-            grounded = true;
-        }
-    }
-
-    public void OnCollisionExit(Collision col)
-    {
-        if (IsInLayerMask(groundLayerMask, col.gameObject.layer))
+        // No contacts this update
+        if (surfaceContactLength == 0)
         {
             grounded = false;
+            return;
         }
+
+        Vector3 groundTotal = Vector3.zero;
+        Vector3 surfaceTotal = Vector3.zero;
+        for (var i = 0; i < surfaceContactLength; i++)
+        {
+            if (i < groundContactLength) groundTotal += groundContactsThisUpdate[i].normal;
+            surfaceTotal += surfaceContactsThisUpdate[i].normal;
+        }
+
+        if (groundContactLength > 0)
+        {
+            saveSurfaceNormal = groundTotal.normalized;
+        }
+
+        contactNormal = surfaceTotal.normalized;
+
+        groundContactLength = 0;
+        surfaceContactLength = 0;
     }
+
+    public Vector3 KartForward
+    {
+        get => surfaceForward;
+    }
+    public Vector3 KartUp
+    {
+        get => surfaceNormal;
+    }
+    public Vector3 GroundUp
+    {
+        get => saveSurfaceNormal;
+    }
+
+    //public void OnCollisionEnter(Collision col)
+    //{
+    //    if (IsInLayerMask(groundLayerMask, col.gameObject.layer))
+    //    {
+    //        grounded = true;
+    //    }
+    //}
+
+    //public void OnCollisionExit(Collision col)
+    //{
+    //    if (IsInLayerMask(groundLayerMask, col.gameObject.layer))
+    //    {
+    //        grounded = false;
+    //    }
+    //}
 }

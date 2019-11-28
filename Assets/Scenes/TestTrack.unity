@@ -143,14 +143,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 39638947}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1664082976}
   - {fileID: 1851253252}
-  m_Father: {fileID: 1436743442}
-  m_RootOrder: 4
+  m_Father: {fileID: 449790620}
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &202406858
 GameObject:
@@ -432,6 +432,40 @@ ParticleSystem:
     type: 3}
   m_PrefabInstance: {fileID: 2302704637198113897}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &449790619
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 449790620}
+  m_Layer: 0
+  m_Name: KartRotater
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &449790620
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 449790619}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 890302504}
+  - {fileID: 1587160421}
+  - {fileID: 1526128690}
+  - {fileID: 39638948}
+  m_Father: {fileID: 1436743442}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &887554715
 GameObject:
   m_ObjectHideFlags: 0
@@ -551,12 +585,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 890302503}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0.375, z: 0}
   m_LocalScale: {x: 1.5, y: 0.2, z: 2}
   m_Children: []
-  m_Father: {fileID: 1436743442}
-  m_RootOrder: 1
+  m_Father: {fileID: 449790620}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &890302505
 BoxCollider:
@@ -699,7 +733,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 1436743442}
+  m_Father: {fileID: 1215244405}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &963194229
@@ -782,6 +816,37 @@ ParticleSystem:
     type: 3}
   m_PrefabInstance: {fileID: 810887966391479206}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1215244404
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1215244405}
+  m_Layer: 0
+  m_Name: CameraRotater
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1215244405
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1215244404}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 963194228}
+  m_Father: {fileID: 1436743442}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1436743441
 GameObject:
   m_ObjectHideFlags: 0
@@ -813,11 +878,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.25, y: 0.25, z: 0.25}
   m_Children:
-  - {fileID: 963194228}
-  - {fileID: 890302504}
-  - {fileID: 1587160421}
-  - {fileID: 1526128690}
-  - {fileID: 39638948}
+  - {fileID: 1215244405}
+  - {fileID: 449790620}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -833,6 +895,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb7b8d30be8e39044bad51518f60f392, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cameraUpSmoothing: 0.96
   swivelSpan: {x: 90, y: 90}
   yRestAngle: 25
   center: {x: 0, y: 0.5, z: 0}
@@ -840,6 +903,7 @@ MonoBehaviour:
   zOffset: -1
   smoothing: 0.85
   playerCamera: {fileID: 963194228}
+  cameraRotationEmpty: {fileID: 1215244405}
 --- !u!114 &1436743444
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -989,6 +1053,7 @@ MonoBehaviour:
   groundLayerMask:
     serializedVersion: 2
     m_Bits: 256
+  kartRotationEmpty: {fileID: 449790620}
   frontAxle: {fileID: 202406859}
   backAxle: {fileID: 1526128690}
   steeringAssembly: {fileID: 1587160421}
@@ -1252,6 +1317,8 @@ MonoBehaviour:
   - {fileID: 969121963}
   - {fileID: 250066021}
   grounded: 0
+  saveSurfaceNormal: {x: 0, y: 1, z: 0}
+  surfaceNormal: {x: 0, y: 1, z: 0}
 --- !u!1001 &1525184645
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1366,8 +1433,8 @@ Transform:
   m_Children:
   - {fileID: 1549964426}
   - {fileID: 333091611}
-  m_Father: {fileID: 1436743442}
-  m_RootOrder: 3
+  m_Father: {fileID: 449790620}
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1536834186
 GameObject:
@@ -1578,13 +1645,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1587160420}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0.25, z: 1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 202406859}
-  m_Father: {fileID: 1436743442}
-  m_RootOrder: 2
+  m_Father: {fileID: 449790620}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1664082975
 GameObject:
@@ -2062,6 +2129,7 @@ GameObject:
   - component: {fileID: 2102095193973968645}
   - component: {fileID: 5331787022015780825}
   - component: {fileID: 3512352847923883824}
+  - component: {fileID: 3512352847923883825}
   m_Layer: 8
   m_Name: Ramp
   m_TagString: Untagged
@@ -2083,6 +2151,20 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 14
   m_Mesh: {fileID: -478882678752539408, guid: 01fff41eb9471b841829f885b422d4da, type: 3}
+--- !u!114 &3512352847923883825
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3512352847923883823}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0893bbacc9064347b6d6edc53821d35, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  surfaceType: 2
+  driveType: 1
 --- !u!4 &3913322281662324713
 Transform:
   m_ObjectHideFlags: 0
@@ -2184,6 +2266,7 @@ GameObject:
   - component: {fileID: 8916396212212238772}
   - component: {fileID: 8309857693101048694}
   - component: {fileID: 5852146885588189669}
+  - component: {fileID: 5852146885588189670}
   m_Layer: 8
   m_Name: Road
   m_TagString: Untagged
@@ -2205,6 +2288,20 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 14
   m_Mesh: {fileID: -8634060567236447461, guid: 01fff41eb9471b841829f885b422d4da, type: 3}
+--- !u!114 &5852146885588189670
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5852146885588189668}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0893bbacc9064347b6d6edc53821d35, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  surfaceType: 1
+  driveType: 1
 --- !u!1 &6414050445587061621
 GameObject:
   m_ObjectHideFlags: 0
@@ -2385,6 +2482,7 @@ GameObject:
   - component: {fileID: 1479799824575141989}
   - component: {fileID: 8821720872350270551}
   - component: {fileID: 8610863857933027251}
+  - component: {fileID: 8610863857933027252}
   m_Layer: 8
   m_Name: Ramp.001
   m_TagString: Untagged
@@ -2406,6 +2504,20 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 14
   m_Mesh: {fileID: -260652956059607485, guid: 01fff41eb9471b841829f885b422d4da, type: 3}
+--- !u!114 &8610863857933027252
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8610863857933027250}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0893bbacc9064347b6d6edc53821d35, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  surfaceType: 2
+  driveType: 1
 --- !u!23 &8669693567622587307
 MeshRenderer:
   m_ObjectHideFlags: 0
