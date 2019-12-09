@@ -3,6 +3,34 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+public struct SteerParameters
+{
+    public float steer;
+    public bool drifting;
+}
+
+public struct SpeedParameters
+{
+    public float speed;
+    public bool drifting;
+}
+
+public struct DriftParameters
+{
+    public bool drifting;
+    public bool mtCharged;
+    public bool stCharged;
+    public bool utCharged;
+}
+
+public struct TurboParameters
+{
+    public bool turboing;
+    public float duration;
+    public float strength;
+    public float progress;
+}
+
 [RequireComponent(typeof(Rigidbody))]
 public class PDriverController : MonoBehaviour
 {
@@ -15,6 +43,7 @@ public class PDriverController : MonoBehaviour
     public float boostingAcceleration;
     [Space(10)]
     public float frictionCoF;
+    public float brakeStrength;
 
     [Header("Turning")]
     public float kartWeight = 1;
@@ -60,25 +89,6 @@ public class PDriverController : MonoBehaviour
 
     [Header("Wheels And Body")]
     public Transform kartRotationEmpty;
-    public Transform frontAxle;
-    public Transform backAxle;
-    public Transform steeringAssembly;
-    public float frontWheelRadii;
-    public float backWheelRadii;
-    public float bodyLength;
-    public float maxFrontAxleYaw = 15f;
-    [Range(0, 1)]
-    public float frontAxleYawSmoothing = 0.8f;
-
-    [Header("Drift Particles")]
-    public ParticleSystem[] driftParticles;
-    public ParticleSystem.MinMaxGradient driftingColor;
-    public ParticleSystem.MinMaxGradient miniturboChargeColor;
-    public ParticleSystem.MinMaxGradient superturboChargeColor;
-    public ParticleSystem.MinMaxGradient ultraturboChargeColor;
-
-    [Header("Nitro Particles")]
-    public ParticleSystem[] nitroParticles;
 
     private float m_Accelerate = 0;
     private float m_Decelerate = 0;
@@ -134,7 +144,8 @@ public class PDriverController : MonoBehaviour
         surfaceForward = Vector3.ProjectOnPlane(surfaceForward, surfaceNormal).normalized;
 
         // DRIFTING
-        if (lastHopVal != m_Hop && m_Hop && !readyToDrift && !drifting)
+        bool tryHop = m_Hop && m_Accelerate > 0.1f; // Do not enter a drift if accelerator is not prssed
+        if (lastHopVal != m_Hop && tryHop && !readyToDrift && !drifting)
         {
             // Only hop if the button was pressed this update
             if (grounded)
@@ -158,7 +169,8 @@ public class PDriverController : MonoBehaviour
             readyToDrift = false;
         }
 
-        if (drifting && !m_Hop)
+        // Stop drifting when handbrake is released or accelerator is released
+        if (drifting && (!m_Hop || m_Accelerate < 0.1f))
         {
             drifting = false;
             EndDrift();
@@ -204,7 +216,8 @@ public class PDriverController : MonoBehaviour
         // MOVEMENT
         var surfaceRight = Vector3.Cross(surfaceForward, surfaceNormal);
 
-        var friction = -velocity.normalized * frictionCoF;
+        var velocityDir = velocity.normalized;
+        var friction = -velocityDir * frictionCoF;
         var slipVelocity = Vector3.Dot(velocity, surfaceRight);
         var gripAmount = !drifting ? turningForce
                          : insideDrift ? turningForce * driftTightness : turningForce / outsideSlippiness;
@@ -212,11 +225,17 @@ public class PDriverController : MonoBehaviour
         // gripForce should immediately cancel out all slip velocity
         var gripForce = gripStrength * -surfaceRight / Time.fixedDeltaTime;
 
+        var brakeForce = Vector3.zero;
+        if (m_Hop && !tryHop)
+        {
+            brakeForce = -velocityDir * brakeStrength;
+        }
+
         var accelInput = m_Accelerate - m_Decelerate;
         var acceleration = accelInput * (accelInput < 0 ? backwardAcceleration : forwardAcceleration) * surfaceForward;
         if (turboActivated) acceleration *= turboBoost;
 
-        var totalAcceleration = friction + gripForce + acceleration;
+        var totalAcceleration = friction + gripForce + brakeForce + acceleration;
         // All of this acceleration should be in the surface plane
         totalAcceleration = Vector3.ProjectOnPlane(totalAcceleration, surfaceNormal);
         velocity += totalAcceleration * Time.fixedDeltaTime;
@@ -238,78 +257,27 @@ public class PDriverController : MonoBehaviour
 
         rb.velocity = velocity;
 
-        // WHEEL VISUALS
-        float frontWheelSpeed = forwardsComponent / frontWheelRadii;
-        Quaternion frontWheelRotation = Quaternion.AngleAxis(frontWheelSpeed * Mathf.Rad2Deg * Time.fixedDeltaTime, Vector3.right);
-        float backWheelSpeed = forwardsComponent / backWheelRadii;
-        Quaternion backWheelRotation = Quaternion.AngleAxis(backWheelSpeed * Mathf.Rad2Deg * Time.fixedDeltaTime, Vector3.right);
-
-        float currentFrontY = steeringAssembly.localEulerAngles.y;
-        if (currentFrontY > 180) currentFrontY -= 360;
-        float frontAxleAngle = Mathf.Lerp(-maxFrontAxleYaw, maxFrontAxleYaw, (m_Steer + 1) / 2);
-        frontAxleAngle = Mathf.Lerp(frontAxleAngle, currentFrontY, frontAxleYawSmoothing);
-        frontAxleAngle = Mathf.Clamp(frontAxleAngle, -maxFrontAxleYaw, maxFrontAxleYaw);
-        Quaternion frontAxleRotation = Quaternion.AngleAxis(frontAxleAngle, Vector3.up);
-
-        backAxle.localRotation *= backWheelRotation;
-        float currentFrontX = frontAxle.localEulerAngles.x;
-        frontAxle.localRotation *= frontWheelRotation;
-
-        steeringAssembly.localRotation = frontAxleRotation;
+        SendMessage("Steer", new SteerParameters { steer = m_Steer, drifting = drifting });
+        SendMessage("Drive", new SpeedParameters { speed = forwardsComponent, drifting = drifting });
+        SendMessage("Drift", new DriftParameters {
+            drifting = drifting,
+            mtCharged = drifting && turboCharge > chargeForMiniturbo,
+            stCharged = drifting && turboCharge > chargeForSuperturbo,
+            utCharged = drifting && turboCharge > chargeForUltraturbo
+        });
+        SendMessage("Turbo", new TurboParameters
+        {
+            duration = turboDuration,
+            progress = (Time.time - turboStartedAt) / turboDuration,
+            strength = turboBoost,
+            turboing = turboActivated
+        });
 
         m_Trick = false;
         lastHopVal = m_Hop;
 
-        UpdateParticles();
         UpdateTurbo();
         UpdateSurfaceContacts();
-    }
-
-    void UpdateParticles()
-    {
-        // DRIFTING PARTICLES
-        bool utCharged = drifting && turboCharge > chargeForUltraturbo && canUltraTurbo;
-        bool stCharged = drifting && turboCharge > chargeForSuperturbo;
-        bool mtCharged = drifting && turboCharge > chargeForMiniturbo;
-
-        bool shouldPlay = drifting && grounded;
-        ParticleSystem.MinMaxGradient driftColor = default;
-        if (utCharged)
-        {
-            driftColor = ultraturboChargeColor;
-        } else if (stCharged)
-        {
-            driftColor = superturboChargeColor;
-        } else if (mtCharged)
-        {
-            driftColor = miniturboChargeColor;
-        } else if (drifting)
-        {
-            driftColor = driftingColor;
-        }
-
-        if (shouldPlay)
-        {
-            foreach (var p in driftParticles)
-            {
-                var colm = p.colorOverLifetime;
-                colm.color = driftColor;
-                p.Play();
-            }
-        } else
-        {
-            foreach (var p in driftParticles)
-            {
-                p.Stop(false, ParticleSystemStopBehavior.StopEmitting);
-            }
-        }
-
-        // NITRO PARTICLES
-        foreach (var p in nitroParticles)
-        {
-            if (turboActivated) p.Play();
-            else p.Stop(false, ParticleSystemStopBehavior.StopEmitting);
-        }
     }
 
     void EndDrift()
@@ -469,6 +437,10 @@ public class PDriverController : MonoBehaviour
     public Vector3 GroundUp
     {
         get => saveSurfaceNormal;
+    }
+    public bool Grounded
+    {
+        get => grounded;
     }
 
     //public void OnCollisionEnter(Collision col)

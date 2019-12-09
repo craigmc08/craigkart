@@ -122,6 +122,17 @@
                 },
                 {
                     "name": "",
+                    "id": "00e7a5c5-234c-4dc7-b64e-0e4220b4ce61",
+                    "path": "<Gamepad>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Controller",
+                    "action": "Decelerate",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "f13062b1-d9ac-401d-a86c-cad30f03d87c",
                     "path": "<Keyboard>/leftShift",
                     "interactions": "",
