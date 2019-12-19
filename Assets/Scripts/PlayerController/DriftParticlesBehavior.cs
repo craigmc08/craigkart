@@ -5,8 +5,8 @@ using UnityEngine;
 [RequireComponent(typeof(PDriverController))]
 public class DriftParticlesBehavior : MonoBehaviour
 {
+    public ParticleSystem[] turboChargedParticles;
     public ParticleSystem[] driftParticles;
-    public ParticleSystem.MinMaxGradient driftingColor;
     public ParticleSystem.MinMaxGradient miniturboChargeColor;
     public ParticleSystem.MinMaxGradient superturboChargeColor;
     public ParticleSystem.MinMaxGradient ultraturboChargeColor;
@@ -20,6 +20,7 @@ public class DriftParticlesBehavior : MonoBehaviour
     public void Drift(DriftParameters p)
     {
         bool shouldPlay = p.drifting && controller.Grounded;
+        bool shouldPlayCharged = shouldPlay && (p.mtCharged || p.stCharged || p.utCharged);
         ParticleSystem.MinMaxGradient driftColor = default;
         if (p.utCharged)
         {
@@ -33,26 +34,36 @@ public class DriftParticlesBehavior : MonoBehaviour
         {
             driftColor = miniturboChargeColor;
         }
-        else if (p.drifting)
-        {
-            driftColor = driftingColor;
-        }
 
-        if (shouldPlay)
+        if (shouldPlayCharged)
         {
-            foreach (var q in driftParticles)
+            StopParticles(driftParticles);
+            foreach (var q in turboChargedParticles)
             {
                 var colm = q.colorOverLifetime;
                 colm.color = driftColor;
                 q.Play();
             }
+        } else if (shouldPlay)
+        {
+            StopParticles(turboChargedParticles);
+            foreach (var q in driftParticles)
+            {
+                q.Play();
+            }
         }
         else
         {
-            foreach (var q in driftParticles)
-            {
-                q.Stop(false, ParticleSystemStopBehavior.StopEmitting);
-            }
+            StopParticles(driftParticles);
+            StopParticles(turboChargedParticles);
+        }
+    }
+
+    void StopParticles(ParticleSystem[] systems)
+    {
+        foreach (var q in systems)
+        {
+            q.Stop(false, ParticleSystemStopBehavior.StopEmitting);
         }
     }
 }

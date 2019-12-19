@@ -8,3 +8,6 @@ There isn't anything here yet.
 - Local Splitscreen/LAN/Online multiplayer with other players
 - Grand prix style story for unlockables
 - Item system like in MarioKart games
+
+## credits
+Images in `Assets/Textures/Particles/` by [Kenny](https://www.kenney.nl/). License is CC0 1.0 Universal.
