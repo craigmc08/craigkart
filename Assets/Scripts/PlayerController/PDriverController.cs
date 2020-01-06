@@ -443,6 +443,15 @@ public class PDriverController : MonoBehaviour
         get => grounded;
     }
 
+    public bool InsideDrift
+    {
+        get => insideDrift;
+    }
+    public bool OutsideDrift
+    {
+        get => !insideDrift;
+    }
+
     //public void OnCollisionEnter(Collision col)
     //{
     //    if (IsInLayerMask(groundLayerMask, col.gameObject.layer))
