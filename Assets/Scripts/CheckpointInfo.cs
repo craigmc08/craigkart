@@ -18,7 +18,10 @@ public class CheckpointInfo : MonoBehaviour
 
     public Vector2 size;
     public float angle;
-    public bool isKeyCheckpoint;
+    public bool isKeyCheckpoint = false;
+    public bool draw = false;
+    public bool overrideDrawColor = false;
+    public Color drawOverrideColor = Color.black;
 
     public Corners GetCorners()
     {
@@ -39,8 +42,11 @@ public class CheckpointInfo : MonoBehaviour
 
     void OnDrawGizmos()
     {
+        if (!draw) return;
+
         Vector3[] corners = GetCorners().AsArray;
         Gizmos.color = isKeyCheckpoint ? keyColor : color;
+        if (overrideDrawColor) Gizmos.color = drawOverrideColor;
         for (int i = 0; i < corners.Length; i++)
         {
             Gizmos.DrawLine(corners[i], corners[(i + 1) % corners.Length]);
@@ -57,7 +63,7 @@ public class CheckpointInfo : MonoBehaviour
 
     public Corners Corners { get => GetCorners(); }
 
-    public Vector3 UVector { get => Corners.TopLeft - Corners.TopRight; }
-    public Vector3 VVector { get => Corners.BottomLeft - Corners.TopLeft; }
+    public Vector3 UVector { get => (Corners.TopLeft - Corners.TopRight).normalized; }
+    public Vector3 VVector { get => (Corners.BottomLeft - Corners.TopLeft).normalized; }
     public Vector3 Normal { get => Vector3.Cross(UVector, VVector); }
 }

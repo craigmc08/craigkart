@@ -23,6 +23,9 @@ public class FollowSpline : MonoBehaviour
     void Update()
     {
         float t = Mathf.Clamp01((Time.time - startTime) / duration);
+
+        if (!running || (t >= 1 && !loop)) return;
+
         transform.position = spline.GetPoint(t);
         if (t >= 1 && loop) Reset();
     }
@@ -39,5 +42,6 @@ public class FollowSpline : MonoBehaviour
     public void Play()
     {
         running = true;
+        startTime = Time.time;
     }
 }
