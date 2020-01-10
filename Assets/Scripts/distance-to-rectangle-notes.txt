@@ -5,9 +5,9 @@ rectangle is vertical with y axis rotation r, rotation of 0 corresponds to norma
 
 to find the smallest distance from point Q to rectangle R:
 
-    [ [ 0, 0, sin r ]     [ 0     [ sin r
+    [ [ 0, 0, cos r ]     [ 0     [ cos r
 n = , [ 0, 0, 0     ]   * , 0   = , 0
-    , [ 0, 0, cos r ] ]   , 1 ]   , cos r ]
+    , [ 0, 0, sin r ] ]   , 1 ]   , sin r ]
 
 let P = Q - proj_n (Q - C) -- Projection of Q onto plane defined by point C and normal n
 
@@ -58,8 +58,9 @@ alternatively, where (P-C) = [ i, j, k ]transpose,
 , y   = , j
 , _ ]   , i * sin r + k * cos r ]
 
-let dp = if |y| <= h / 2 then |x| - w / 2 -- Horizontal line to nearest vertical edge
+let dp = if |y| <= h / 2 && |x| <= w / 2 then 0
+         else if |y| <= h / 2 then |x| - w / 2 -- Horizontal line to nearest vertical edge
          else if |x| <= w / 2 then |y| - h / 2 -- Vertical line to nearest horizontal edge
          else sqrt((|x| - w / 2)^2 + (|y| - h / 2)^2) -- Diagonal line to nearest corner
 
-distance = sqrt(||Q-P||^2 + dp)
+distance = sqrt(||Q-P||^2 + dp^2)

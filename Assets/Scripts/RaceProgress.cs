@@ -4,16 +4,15 @@ using UnityEngine;
 
 public class RaceProgress : MonoBehaviour
 {
-    public CheckpointInfo[] checkpoints;
-    public CheckpointInfo[] keyCheckpoints;
+    public Checkpoint[] checkpoints;
+    public Checkpoint[] keyCheckpoints;
 
     public int laps = 0;
     public int currentKeyCheckpoint = 0;
     public int currentCheckpoint = 0;
     public float lapProgress = 0;
 
-    public float testSphereRadius;
-    public CheckpointInfo testCheckpoint;
+    public float collisionRadius;
 
     // Start is called before the first frame update
     void Start()
@@ -32,7 +31,7 @@ public class RaceProgress : MonoBehaviour
         if (inKeyCheckpoint == -1) {
             for (int i = 0; i < keyCheckpoints.Length; i++) {
                 if (!KeyCheckpointLoaded(i)) continue;
-                Intersection intrscn = SphereIntersectingCheckpoint(transform.position, testSphereRadius, keyCheckpoints[i]);
+                Intersection intrscn = SphereIntersectingCheckpoint(transform.position, collisionRadius, keyCheckpoints[i]);
                 if (intrscn != Intersection.None) {
                     inKeyCheckpoint = i;
                     if (intrscn == Intersection.Back) OnKeyCheckpointForward(inKeyCheckpoint);
@@ -40,7 +39,7 @@ public class RaceProgress : MonoBehaviour
                 }
             }
         } else {
-            Intersection intrscn = SphereIntersectingCheckpoint(transform.position, testSphereRadius, keyCheckpoints[inKeyCheckpoint]);
+            Intersection intrscn = SphereIntersectingCheckpoint(transform.position, collisionRadius, keyCheckpoints[inKeyCheckpoint]);
             if (intrscn == Intersection.None) {
                 inKeyCheckpoint = -1;
             }
@@ -54,7 +53,7 @@ public class RaceProgress : MonoBehaviour
                 }
                 bool loaded = checkpoints[i].isKeyCheckpoint ? KeyCheckpointLoaded(keyCount) : CheckpointLoaded(keyCount);
                 if (!loaded) continue;
-                Intersection intrscn = SphereIntersectingCheckpoint(transform.position, testSphereRadius, checkpoints[i]);
+                Intersection intrscn = SphereIntersectingCheckpoint(transform.position, collisionRadius, checkpoints[i]);
                 if (intrscn != Intersection.None) {
                     inCheckpoint = i;
                     if (intrscn == Intersection.Back) OnCheckpointForward(inCheckpoint);
@@ -62,14 +61,14 @@ public class RaceProgress : MonoBehaviour
                 }
             }
         } else {
-            if (SphereIntersectingCheckpoint(transform.position, testSphereRadius, checkpoints[inCheckpoint]) == Intersection.None) {
+            if (SphereIntersectingCheckpoint(transform.position, collisionRadius, checkpoints[inCheckpoint]) == Intersection.None) {
                 inCheckpoint = -1;
             }
         }
         
         // Compute progress
-        float distToCurrent = Vector3.Distance(transform.position, checkpoints[currentCheckpoint].Center);
-        float distToNext = Vector3.Distance(transform.position, checkpoints[Math.mod(currentCheckpoint + 1, checkpoints.Length)].Center);
+        float distToCurrent = checkpoints[currentCheckpoint].Distance(transform.position);
+        float distToNext = checkpoints[Math.mod(currentCheckpoint + 1, checkpoints.Length)].Distance(transform.position);
         
         float m = (float)currentCheckpoint;
         float n = (float)checkpoints.Length;
@@ -120,7 +119,13 @@ public class RaceProgress : MonoBehaviour
         else if (inCheckpoint != -1) Gizmos.color = Color.blue;
         else Gizmos.color = Color.black;
         
-        Gizmos.DrawSphere(transform.position, testSphereRadius);
+        Gizmos.DrawSphere(transform.position, collisionRadius);
+
+        // Gizmos.color = Color.magenta;
+        // float distToCurrent = checkpoints[currentCheckpoint].Distance(transform.position);
+        // Gizmos.color = Color.green;
+        // float distToNext = checkpoints[Math.mod(currentCheckpoint + 1, checkpoints.Length)].Distance(transform.position);
+        // Debug.Log(distToCurrent + ", " + distToNext);
     }
 
     public enum Intersection
@@ -129,7 +134,7 @@ public class RaceProgress : MonoBehaviour
         None,
         Front
     };
-    public Intersection SphereIntersectingCheckpoint(Vector3 point, float radius, CheckpointInfo checkpoint)
+    public Intersection SphereIntersectingCheckpoint(Vector3 point, float radius, Checkpoint checkpoint)
     {
         // Test if the point is within radius units of the plane formed by the corners of the checkpoint
         Corners corners = checkpoint.GetCorners();
@@ -167,7 +172,7 @@ public class RaceProgress : MonoBehaviour
     public float Progress { get => laps + lapProgress; }
     public float LapProgress { get => lapProgress; }
     public float KeyCheckpoint { get => currentKeyCheckpoint; }
-    public CheckpointInfo[] LoadedKeyCheckpoints { get => new CheckpointInfo[]
+    public Checkpoint[] LoadedKeyCheckpoints { get => new Checkpoint[]
     {
         keyCheckpoints[(currentKeyCheckpoint - 1) % keyCheckpoints.Length],
         keyCheckpoints[(currentKeyCheckpoint)],

@@ -1,16 +1,7 @@
-plan for calculating lap progression:
+current problem:
+if you enter checkpoint 0 from the back, then exit from the back, your lap
+count still increases. you can then drive to the last checkpoint, enter it
+forwards and drive to checkpoint 0. you then get a new lap count.
+also, it can cause a desynch between key checkpoints and normal checkpoints
 
-keep track of current checkpoint
-
-each update, compute distance to last passed checkpoint (including key checkpoints) and distance to next checkpoint.
-
-first idea for distance to checkpoint: simple distance to center
-
-with n checkpoints (including key checkpoints), current checkpoint m,
-a distance to previous p and a distance to next q, lap progress is:
-
-LP = m/n + p/(n(p+q))
-
-current problems:
-there is discontinuities in the progress function at checkpoints due to the test sphere radius. not sure of the
-best way to solve this...
+possible fix: only trigger checkpoint events when exiting a checkpoint.

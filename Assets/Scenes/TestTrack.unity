@@ -164,11 +164,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   size: {x: 40, y: 10}
-  angle: 150.04
+  angle: 68.14
   isKeyCheckpoint: 1
-  draw: 1
+  draw: 0
   overrideDrawColor: 0
-  drawOverrideColor: {r: 0, g: 0, b: 0, a: 1}
+  drawOverrideColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
 --- !u!1 &31637030
 GameObject:
   m_ObjectHideFlags: 0
@@ -213,11 +213,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   size: {x: 28, y: 10}
-  angle: -20
+  angle: 247.2
   isKeyCheckpoint: 1
   draw: 1
   overrideDrawColor: 0
-  drawOverrideColor: {r: 0, g: 0, b: 0, a: 1}
+  drawOverrideColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
 --- !u!1 &39638947
 GameObject:
   m_ObjectHideFlags: 0
@@ -308,7 +308,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 175771088}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -9.15, y: -1.98, z: -12.75}
+  m_LocalPosition: {x: -12.2, y: -1.98, z: -14.6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 368388832}
@@ -327,11 +327,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   size: {x: 28, y: 10}
-  angle: -30.9
+  angle: -113
   isKeyCheckpoint: 0
   draw: 1
   overrideDrawColor: 0
-  drawOverrideColor: {r: 0, g: 0, b: 0, a: 1}
+  drawOverrideColor: {r: 0, g: 1, b: 0, a: 1}
 --- !u!1 &202406858
 GameObject:
   m_ObjectHideFlags: 0
@@ -725,11 +725,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   size: {x: 22.5, y: 10}
-  angle: 201.9
+  angle: 116.4
   isKeyCheckpoint: 0
   draw: 1
   overrideDrawColor: 0
-  drawOverrideColor: {r: 0, g: 0, b: 0, a: 1}
+  drawOverrideColor: {r: 0, g: 1, b: 0, a: 1}
 --- !u!1 &629279186
 GameObject:
   m_ObjectHideFlags: 0
@@ -755,7 +755,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 629279186}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 2.209229, y: -1.17, z: -3.5500033}
+  m_LocalPosition: {x: 2.9, y: -1.17, z: -3.9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 368388832}
@@ -774,11 +774,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   size: {x: 22.6, y: 10}
-  angle: -52.9
+  angle: -137.2
   isKeyCheckpoint: 0
   draw: 1
   overrideDrawColor: 0
-  drawOverrideColor: {r: 0, g: 0, b: 0, a: 1}
+  drawOverrideColor: {r: 0, g: 1, b: 0, a: 1}
 --- !u!198 &885963383 stripped
 ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 7716324576776902654, guid: e7c70baf85fd53544ab3e7663d215918,
@@ -995,7 +995,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 938067750}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -56.09, y: -1.98, z: -22.62}
+  m_LocalPosition: {x: -57.1, y: -1.98, z: -21.9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 368388832}
@@ -1014,11 +1014,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   size: {x: 40.6, y: 10}
-  angle: 40.8
+  angle: -39.9
   isKeyCheckpoint: 0
-  draw: 1
+  draw: 0
   overrideDrawColor: 0
-  drawOverrideColor: {r: 0, g: 0, b: 0, a: 1}
+  drawOverrideColor: {r: 0, g: 1, b: 0, a: 1}
 --- !u!1 &953485331
 GameObject:
   m_ObjectHideFlags: 0
@@ -1293,11 +1293,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   size: {x: 15, y: 10}
-  angle: -90
+  angle: 184.8
   isKeyCheckpoint: 1
   draw: 1
-  overrideDrawColor: 0
-  drawOverrideColor: {r: 0, g: 0, b: 0, a: 1}
+  overrideDrawColor: 1
+  drawOverrideColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
 --- !u!1 &1340794955
 GameObject:
   m_ObjectHideFlags: 0
@@ -1342,11 +1342,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   size: {x: 25, y: 10}
-  angle: 168.3
+  angle: 83.2
   isKeyCheckpoint: 1
   draw: 1
   overrideDrawColor: 0
-  drawOverrideColor: {r: 0, g: 0, b: 0, a: 1}
+  drawOverrideColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
 --- !u!1001 &1394382158
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1439,6 +1439,7 @@ GameObject:
   - component: {fileID: 1436743447}
   - component: {fileID: 1436743450}
   - component: {fileID: 1436743449}
+  - component: {fileID: 1436743451}
   m_Layer: 0
   m_Name: Kart
   m_TagString: Untagged
@@ -1887,6 +1888,38 @@ MonoBehaviour:
       m_NumAlphaKeys: 2
     m_ColorMin: {r: 0, g: 0, b: 0, a: 0}
     m_ColorMax: {r: 0, g: 0, b: 0, a: 0}
+--- !u!114 &1436743451
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1436743441}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b97c9668093265b40a4adc03366b6f4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  checkpoints:
+  - {fileID: 1253923192}
+  - {fileID: 629279188}
+  - {fileID: 175771090}
+  - {fileID: 31637032}
+  - {fileID: 938067752}
+  - {fileID: 18835615}
+  - {fileID: 2113672079}
+  - {fileID: 1340794957}
+  - {fileID: 503463191}
+  keyCheckpoints:
+  - {fileID: 1253923192}
+  - {fileID: 31637032}
+  - {fileID: 18835615}
+  - {fileID: 1340794957}
+  laps: 0
+  currentKeyCheckpoint: 0
+  currentCheckpoint: 0
+  lapProgress: 0
+  collisionRadius: 0.5
 --- !u!1001 &1525184645
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2321,7 +2354,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2113672077}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -32.3, y: -1.98, z: 19.62}
+  m_LocalPosition: {x: -31.8, y: -1.98, z: 17.9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 368388832}
@@ -2340,11 +2373,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   size: {x: 40.6, y: 10}
-  angle: 162.7
+  angle: 76.2
   isKeyCheckpoint: 0
-  draw: 1
+  draw: 0
   overrideDrawColor: 0
-  drawOverrideColor: {r: 0, g: 0, b: 0, a: 1}
+  drawOverrideColor: {r: 0, g: 1, b: 0, a: 1}
 --- !u!33 &175184355861519764
 MeshFilter:
   m_ObjectHideFlags: 0

@@ -2363,7 +2363,7 @@ MonoBehaviour:
   currentCheckpoint: 0
   lapProgress: 0
   testSphereRadius: 0.5
-  testCheckpoint: {fileID: 207304435086043081}
+  testCheckpoint: {fileID: 4128898214730872379}
 --- !u!4 &2109255586
 Transform:
   m_ObjectHideFlags: 0
@@ -2372,7 +2372,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2109255584}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.03, y: 0, z: 0.01}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -2477,7 +2477,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   size: {x: 3, y: 2}
-  angle: 0
+  angle: -90
   isKeyCheckpoint: 1
   draw: 1
   overrideDrawColor: 0
@@ -2512,7 +2512,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   size: {x: 3, y: 2}
-  angle: 180
+  angle: 90
   isKeyCheckpoint: 1
   draw: 1
   overrideDrawColor: 0
@@ -2561,7 +2561,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   size: {x: 3, y: 2}
-  angle: 135
+  angle: 45
   isKeyCheckpoint: 0
   draw: 0
   overrideDrawColor: 0
@@ -2596,7 +2596,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   size: {x: 3, y: 2}
-  angle: 90
+  angle: 0
   isKeyCheckpoint: 0
   draw: 0
   overrideDrawColor: 0
@@ -2691,7 +2691,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   size: {x: 3, y: 2}
-  angle: -135
+  angle: 135
   isKeyCheckpoint: 0
   draw: 1
   overrideDrawColor: 0
@@ -2726,7 +2726,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   size: {x: 3, y: 2}
-  angle: 90
+  angle: 0
   isKeyCheckpoint: 0
   draw: 0
   overrideDrawColor: 0
@@ -2761,7 +2761,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   size: {x: 3, y: 2}
-  angle: -90
+  angle: 180
   isKeyCheckpoint: 0
   draw: 1
   overrideDrawColor: 0
@@ -2818,7 +2818,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   size: {x: 3, y: 2}
-  angle: -90
+  angle: 180
   isKeyCheckpoint: 0
   draw: 1
   overrideDrawColor: 0
@@ -2853,7 +2853,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   size: {x: 3, y: 2}
-  angle: -90
+  angle: 180
   isKeyCheckpoint: 1
   draw: 1
   overrideDrawColor: 1
@@ -3012,7 +3012,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   size: {x: 3, y: 2}
-  angle: 90
+  angle: 0
   isKeyCheckpoint: 1
   draw: 0
   overrideDrawColor: 0
@@ -3047,7 +3047,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   size: {x: 3, y: 2}
-  angle: 45
+  angle: -45
   isKeyCheckpoint: 0
   draw: 0
   overrideDrawColor: 0
@@ -3082,7 +3082,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   size: {x: 3, y: 2}
-  angle: -45
+  angle: -135
   isKeyCheckpoint: 0
   draw: 1
   overrideDrawColor: 0
