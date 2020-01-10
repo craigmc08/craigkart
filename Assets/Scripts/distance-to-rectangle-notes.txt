@@ -1,0 +1,65 @@
+-- Some guidance from https://math.stackexchange.com/questions/2008825/distance-between-a-point-and-rectangle-in-3d-space
+
+for rectangle R with center C, width w, height h, rotation r radians
+rectangle is vertical with y axis rotation r, rotation of 0 corresponds to normal of [0,0,1]
+
+to find the smallest distance from point Q to rectangle R:
+
+    [ [ 0, 0, sin r ]     [ 0     [ sin r
+n = , [ 0, 0, 0     ]   * , 0   = , 0
+    , [ 0, 0, cos r ] ]   , 1 ]   , cos r ]
+
+let P = Q - proj_n (Q - C) -- Projection of Q onto plane defined by point C and normal n
+
+let dp = { x | x = P - z, z in rectangle R }
+
+distance = sqrt(||P||^2 + min{||x||^2 | x in dp})
+
+------------------------------------------------------------
+FINDING MINIMUM OF dp:
+
+if P is in rectangle R, the minimum is 0
+else, the problem can be converted to 2d by:
+
+-- This fact about T should be true because the normal to the plane should
+-- be in the 3rd dimension
+P' = T * (P - C) where T | rotates about y axis by -r
+
+T * e1 = rotate [1,0,0] by -r around y axis = [ cos (-r), 0, sin (-r) = [ cos r, 0, sin r ]
+T * e2 = rotate [0,1,0] by -r around y axis = [ 0, 1, 0]
+T * e3 = rotate [0,0,1] by -r around y axis = [ -sin r, 0, cos r ]
+    [ [ cos r, 0, -sin r ]
+T = , [ 0    , 1,  0     ]
+    , [ sin r, 0,  cos r ] ]
+
+the rectangle in this new situation is now centered at [0, 0] and has width w and height h
+P' = [x, y, _] is a point on the 2d plane.
+
+the closest distance can be broken into a number of situations:
+if |y| <= h / 2 then |x| - w / 2 -- Horizontal line to nearest vertical edge
+if |x| <= w / 2 then |y| - h / 2 -- Vertical line to nearest horizontal edge
+else sqrt((|x| - w / 2)^2 + (|y| - h / 2)^2) -- Diagonal line to nearest corner
+
+-----------------------------------------------------------------------------
+FULL SOLUTION
+
+    [ [ 0, 0, sin r ]     [ 0     [ sin r
+n = , [ 0, 0, 0     ]   * , 0   = , 0
+    , [ 0, 0, cos r ] ]   , 1 ]   , cos r ]
+
+let P = Q - proj_n (Q - C) -- Projection of Q onto plane defined by point C and normal n
+
+         [ x     [ [ cos r, 0, -sin r ]
+let P' = , y   = , [ 0    , 1,  0     ]   * (P - C) -- I am somewhat unsure about this transformation matrix to transform (P - C) into the XY plane
+         , _ ]   , [ sin r, 0,  cos r ] ]
+
+alternatively, where (P-C) = [ i, j, k ]transpose,
+[ x     [ i cos r - k sin r
+, y   = , j
+, _ ]   , i * sin r + k * cos r ]
+
+let dp = if |y| <= h / 2 then |x| - w / 2 -- Horizontal line to nearest vertical edge
+         else if |x| <= w / 2 then |y| - h / 2 -- Vertical line to nearest horizontal edge
+         else sqrt((|x| - w / 2)^2 + (|y| - h / 2)^2) -- Diagonal line to nearest corner
+
+distance = sqrt(||Q-P||^2 + dp)
