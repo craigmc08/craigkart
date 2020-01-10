@@ -23,7 +23,9 @@ public class RaceProgress : MonoBehaviour
     }
 
     int inKeyCheckpoint = -1;
+    bool lastKeyCheckpointIntersectionIsBack = false;
     int inCheckpoint = -1;
+    bool lastCheckpointIntersectionIsBack = false;
 
     // Update is called once per frame
     void Update()
@@ -34,15 +36,16 @@ public class RaceProgress : MonoBehaviour
                 Intersection intrscn = SphereIntersectingCheckpoint(transform.position, collisionRadius, keyCheckpoints[i]);
                 if (intrscn != Intersection.None) {
                     inKeyCheckpoint = i;
-                    if (intrscn == Intersection.Back) OnKeyCheckpointForward(inKeyCheckpoint);
-                    else OnKeyCheckpointBackward(inKeyCheckpoint);
+                    lastKeyCheckpointIntersectionIsBack = intrscn == Intersection.Back;
                 }
             }
         } else {
             Intersection intrscn = SphereIntersectingCheckpoint(transform.position, collisionRadius, keyCheckpoints[inKeyCheckpoint]);
             if (intrscn == Intersection.None) {
+                if (!lastKeyCheckpointIntersectionIsBack) OnKeyCheckpointForward(inKeyCheckpoint);
+                else OnKeyCheckpointBackward(inKeyCheckpoint);
                 inKeyCheckpoint = -1;
-            }
+            } else lastKeyCheckpointIntersectionIsBack = intrscn == Intersection.Back;
         }
 
         if (inCheckpoint == -1) {
@@ -56,14 +59,16 @@ public class RaceProgress : MonoBehaviour
                 Intersection intrscn = SphereIntersectingCheckpoint(transform.position, collisionRadius, checkpoints[i]);
                 if (intrscn != Intersection.None) {
                     inCheckpoint = i;
-                    if (intrscn == Intersection.Back) OnCheckpointForward(inCheckpoint);
-                    else OnCheckpointBackward(inCheckpoint);
+                    lastCheckpointIntersectionIsBack = intrscn == Intersection.Back;
                 }
             }
         } else {
-            if (SphereIntersectingCheckpoint(transform.position, collisionRadius, checkpoints[inCheckpoint]) == Intersection.None) {
+            Intersection intrscn = SphereIntersectingCheckpoint(transform.position, collisionRadius, checkpoints[inCheckpoint]);
+            if (intrscn == Intersection.None) {
+                if (!lastCheckpointIntersectionIsBack) OnCheckpointForward(inCheckpoint);
+                else OnCheckpointBackward(inCheckpoint);
                 inCheckpoint = -1;
-            }
+            } else lastCheckpointIntersectionIsBack = intrscn == Intersection.Back;
         }
         
         // Compute progress

@@ -5,3 +5,5 @@ forwards and drive to checkpoint 0. you then get a new lap count.
 also, it can cause a desynch between key checkpoints and normal checkpoints
 
 possible fix: only trigger checkpoint events when exiting a checkpoint.
+
+this means the start checkpoint should be testSphereRadius units behind the start line.
