@@ -7,38 +7,120 @@ public class RaceProgress : MonoBehaviour
     public CheckpointInfo[] checkpoints;
     public CheckpointInfo[] keyCheckpoints;
 
-    int laps = 0;
-    int currentKeyCheckpoint = 0;
-    int currentCheckpoint = 0;
-    float lapProgress = 0;
+    public int laps = 0;
+    public int currentKeyCheckpoint = 0;
+    public int currentCheckpoint = 0;
+    public float lapProgress = 0;
 
-    public Transform testSphere;
     public float testSphereRadius;
     public CheckpointInfo testCheckpoint;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        foreach (var checkpoint in checkpoints) {
+            checkpoint.draw = false;
+        }
     }
+
+    int inKeyCheckpoint = -1;
+    int inCheckpoint = -1;
 
     // Update is called once per frame
     void Update()
     {
+        if (inKeyCheckpoint == -1) {
+            for (int i = 0; i < keyCheckpoints.Length; i++) {
+                if (!KeyCheckpointLoaded(i)) continue;
+                Intersection intrscn = SphereIntersectingCheckpoint(transform.position, testSphereRadius, keyCheckpoints[i]);
+                if (intrscn != Intersection.None) {
+                    inKeyCheckpoint = i;
+                    if (intrscn == Intersection.Back) OnKeyCheckpointForward(inKeyCheckpoint);
+                    else OnKeyCheckpointBackward(inKeyCheckpoint);
+                }
+            }
+        } else {
+            Intersection intrscn = SphereIntersectingCheckpoint(transform.position, testSphereRadius, keyCheckpoints[inKeyCheckpoint]);
+            if (intrscn == Intersection.None) {
+                inKeyCheckpoint = -1;
+            }
+        }
+
+        if (inCheckpoint == -1) {
+            int keyCount = -1;
+            for (int i = 0; i < checkpoints.Length; i++) {
+                if (checkpoints[i].isKeyCheckpoint) {
+                    keyCount++;
+                }
+                bool loaded = checkpoints[i].isKeyCheckpoint ? KeyCheckpointLoaded(keyCount) : CheckpointLoaded(keyCount);
+                if (!loaded) continue;
+                Intersection intrscn = SphereIntersectingCheckpoint(transform.position, testSphereRadius, checkpoints[i]);
+                if (intrscn != Intersection.None) {
+                    inCheckpoint = i;
+                    if (intrscn == Intersection.Back) OnCheckpointForward(inCheckpoint);
+                    else OnCheckpointBackward(inCheckpoint);
+                }
+            }
+        } else {
+            if (SphereIntersectingCheckpoint(transform.position, testSphereRadius, checkpoints[inCheckpoint]) == Intersection.None) {
+                inCheckpoint = -1;
+            }
+        }
         
+        // Compute progress
+        float distToCurrent = Vector3.Distance(transform.position, checkpoints[currentCheckpoint].Center);
+        float distToNext = Vector3.Distance(transform.position, checkpoints[Math.mod(currentCheckpoint + 1, checkpoints.Length)].Center);
+        
+        float m = (float)currentCheckpoint;
+        float n = (float)checkpoints.Length;
+        
+        float segmentProgress = distToCurrent / (distToCurrent + distToNext);
+        lapProgress = (m + segmentProgress) / n;
+    }
+
+    void OnCheckpointForward(int index) {
+        currentCheckpoint = index;
+    }
+
+    void OnCheckpointBackward(int index) {
+        currentCheckpoint = Math.mod(index - 1, checkpoints.Length);
+    }
+
+    int previousKeyCheckpoint = -1;
+    void OnKeyCheckpointForward(int index) {
+        // Debug.Log("passed through key checkpoint " + index + " forwards");
+        previousKeyCheckpoint = currentKeyCheckpoint;
+
+        if (index == 0 && previousKeyCheckpoint == keyCheckpoints.Length - 1) laps++;
+        currentKeyCheckpoint = index;
+    }
+
+    void OnKeyCheckpointBackward(int index) {
+        // Debug.Log("passed through key checkpoint " + index + " backwards");
+        previousKeyCheckpoint = currentKeyCheckpoint;
+
+        if (index == 0 && previousKeyCheckpoint == 0) laps--;
+        currentKeyCheckpoint = Math.mod(index - 1, keyCheckpoints.Length);
     }
 
     private void OnDrawGizmos()
     {
-        Intersection intersection = SphereIntersectingCheckpoint(testSphere.position, testSphereRadius, testCheckpoint);
-
-        switch (intersection)
-        {
-            case Intersection.None: Gizmos.color = Color.red; break;
-            case Intersection.Back: Gizmos.color = Color.blue; break;
-            case Intersection.Front: Gizmos.color = Color.green; break;
+        int keyCount = -1;
+        for (int i = 0; i < checkpoints.Length; i++) {
+            if (checkpoints[i].isKeyCheckpoint) {
+                keyCount++;
+            }
+            bool loaded = checkpoints[i].isKeyCheckpoint ? KeyCheckpointLoaded(keyCount) : CheckpointLoaded(keyCount);
+            checkpoints[i].draw = loaded;
+            checkpoints[i].overrideDrawColor = (checkpoints[i].isKeyCheckpoint && keyCount == currentKeyCheckpoint) || i == currentCheckpoint;
+            checkpoints[i].drawOverrideColor = checkpoints[i].isKeyCheckpoint ? Color.yellow : Color.green;
         }
-        Gizmos.DrawSphere(testSphere.position, testSphereRadius);
+
+        if (inKeyCheckpoint != -1) Gizmos.color = Color.red;
+        else if (inCheckpoint != -1) Gizmos.color = Color.blue;
+        else Gizmos.color = Color.black;
+        
+        Gizmos.DrawSphere(transform.position, testSphereRadius);
     }
 
     public enum Intersection
@@ -63,20 +145,23 @@ public class RaceProgress : MonoBehaviour
         Vector3 pointOnPlane = point - d;
         Vector3 pd = pointOnPlane - p;
 
-        if (u.y * v.x == u.x * v.y || v.y == 0) {
-            // Invalid solution. This should be impossible, pd should be lineary dependent
-            // on u and v because it is in the plane of u and v by its definition
-            return Intersection.None;
-        }
-
-        float uCoord = (v.x * pd.y - v.y * pd.x) / (u.y * v.x - u.x * v.y);
-        float vCoord = (u.x * pd.y - u.y * pd.x) / (u.x * v.y - u.y * v.x);
+        // u ⊥ v and pd is linearly dependent with u and v.
+        // this is a shortcut to find a linear combination of u and v to get pd
+        float uCoord = Vector3.Dot(pd, u);
+        float vCoord = Vector3.Dot(pd, v);
 
         if (Mathf.Abs(uCoord) <= checkpoint.Width / 2 && Mathf.Abs(vCoord) <= checkpoint.Height / 2)
         {
             return Vector3.Dot(n, d) >= 0 ? Intersection.Front : Intersection.Back;
         }
         return Intersection.None;
+    }
+
+    public bool KeyCheckpointLoaded(int id) {
+        return id == currentKeyCheckpoint || Math.mod(id - 1, keyCheckpoints.Length) == currentKeyCheckpoint || Math.mod(id + 1, keyCheckpoints.Length) == currentKeyCheckpoint;
+    }
+    public bool CheckpointLoaded(int followsKey) {
+        return followsKey == currentKeyCheckpoint || Math.mod(followsKey + 1, keyCheckpoints.Length) == currentKeyCheckpoint;
     }
 
     public float Progress { get => laps + lapProgress; }
