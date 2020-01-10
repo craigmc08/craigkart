@@ -47,11 +47,24 @@ public class CheckpointInfo : MonoBehaviour
         Vector3[] corners = GetCorners().AsArray;
         Gizmos.color = isKeyCheckpoint ? keyColor : color;
         if (overrideDrawColor) Gizmos.color = drawOverrideColor;
+        Color c = Gizmos.color;
+        Mesh mesh = new Mesh();
+        List<Vector3> verts = new List<Vector3>();
         for (int i = 0; i < corners.Length; i++)
         {
             Gizmos.DrawLine(corners[i], corners[(i + 1) % corners.Length]);
+            verts.Add(corners[i]);
         }
         Gizmos.DrawRay(new Ray(Center, Normal));
+
+        int[] tris = new int[] { 0,1,2, 0,2,3, 0,2,1, 0,3,2 };
+        mesh.SetVertices(verts);
+        mesh.SetTriangles(tris, 0);
+        mesh.RecalculateBounds();
+        mesh.RecalculateNormals();
+        mesh.RecalculateTangents();
+        Gizmos.color = new Color(c.r, c.g, c.b, 0.4f);
+        Gizmos.DrawMesh(mesh);
     }
 
     public Vector3 Center { get => transform.position; }

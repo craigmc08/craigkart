@@ -125,6 +125,7 @@ public class PDriverController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         rb.mass = kartWeight;
+        surfaceForward = transform.forward;
     }
 
     private void FixedUpdate()
