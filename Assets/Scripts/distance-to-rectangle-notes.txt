@@ -23,33 +23,14 @@ else, the problem can be converted to 2d by:
 
 -- This fact about T should be true because the normal to the plane should
 -- be in the 3rd dimension
-P' = T * (P - C) where T | T * n = transpose [0, 0, 1]
+P' = T * (P - C) where T | rotates about y axis by -r
 
-[ [ a, b, c ]     [ sin r     [ 0
-, [ d, e, f ]   * , 0       = , 0
-, [ g, h, i ] ]   , cos r ]   , 1 ]
-
-1. a * sin r + b * cos r = 0
-a * sin r = -b * cos r
-m * cos r * sin r = - (-m sin r) * cos r => true
-a = c_1 * cos r, b = -c_1 * sin r
-
-2. d * sin r + f * cos r = 1
-similar to (1),
-d = c_2 * cos r, f = -c_2 * sin r
-
-
-3. g * sin r + i * cos r = 0
-sin r * sin r + cos r * cos r = 1
-sin^2 r + cos^2 = 1 => true
-g = sin r, i = cos r
-
-b, e, h are any number
-
-simplest matrix T:
-[ [ cos r, 0, -sin r ]
-, [ cos r, 0, -sin r ]
-, [ sin r, 0,  cos r ] ]
+T * e1 = rotate [1,0,0] by -r around y axis = [ cos (-r), 0, sin (-r) = [ cos r, 0, sin r ]
+T * e2 = rotate [0,1,0] by -r around y axis = [ 0, 1, 0]
+T * e3 = rotate [0,0,1] by -r around y axis = [ -sin r, 0, cos r ]
+    [ [ cos r, 0, -sin r ]
+T = , [ 0    , 1,  0     ]
+    , [ sin r, 0,  cos r ] ]
 
 the rectangle in this new situation is now centered at [0, 0] and has width w and height h
 P' = [x, y, _] is a point on the 2d plane.
@@ -69,8 +50,13 @@ n = , [ 0, 0, 0     ]   * , 0   = , 0
 let P = Q - proj_n (Q - C) -- Projection of Q onto plane defined by point C and normal n
 
          [ x     [ [ cos r, 0, -sin r ]
-let P' = , y   = , [ cos r, 0, -sin r ]   * (P - C) -- I am quite unsure about this transformation matrix to transform (P - C) into the XY plane
+let P' = , y   = , [ 0    , 1,  0     ]   * (P - C) -- I am somewhat unsure about this transformation matrix to transform (P - C) into the XY plane
          , _ ]   , [ sin r, 0,  cos r ] ]
+
+alternatively, where (P-C) = [ i, j, k ]transpose,
+[ x     [ i cos r - k sin r
+, y   = , j
+, _ ]   , i * sin r + k * cos r ]
 
 let dp = if |y| <= h / 2 then |x| - w / 2 -- Horizontal line to nearest vertical edge
          else if |x| <= w / 2 then |y| - h / 2 -- Vertical line to nearest horizontal edge
