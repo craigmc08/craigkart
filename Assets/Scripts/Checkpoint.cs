@@ -11,25 +11,27 @@ public struct Corners {
     public Vector3[] AsArray { get => new Vector3[] { TopLeft, TopRight, BottomRight, BottomLeft }; }
 }
 
-public class Checkpoint : MonoBehaviour
+[System.Serializable]
+public class Checkpoint
 {
     static Color keyColor = Color.red;
     static Color color = Color.blue;
 
-    public Vector2 size;
-    public float angle;
-    public bool isKeyCheckpoint = false;
-    public bool draw = false;
-    public bool overrideDrawColor = false;
-    public Color drawOverrideColor = Color.black;
+    [SerializeField] Vector3 center = Vector2.zero;
+    [SerializeField] Vector2 size = new Vector2(1, 1);
+    [SerializeField] float angle = 0;
+    [SerializeField] bool isKeyCheckpoint = false;
+    [SerializeField] bool draw = true;
+    bool overrideDrawColor = false;
+    Color drawOverrideColor = Color.black;
 
     public Corners GetCorners()
     {
         float rads = angle * Mathf.Deg2Rad;
         Vector3 tangent = UVector;
         Vector3 bitangent = VVector;
-        Vector3 left = transform.position - size.x * tangent / 2;
-        Vector3 right = transform.position + size.x * tangent / 2;
+        Vector3 left = center - size.x * tangent / 2;
+        Vector3 right = center + size.x * tangent / 2;
         Vector3 top = size.y * bitangent / 2;
         Vector3 bottom = -size.y * bitangent / 2;
         return new Corners
@@ -41,7 +43,7 @@ public class Checkpoint : MonoBehaviour
         };
     }
 
-    void OnDrawGizmos()
+    public void DrawGizmos()
     {
         if (!draw) return;
 
@@ -92,7 +94,7 @@ public class Checkpoint : MonoBehaviour
         return Mathf.Sqrt((Q - Center - P).sqrMagnitude + dp*dp);
     }
 
-    public Vector3 Center { get => transform.position; }
+    public Vector3 Center { get => center; }
     public float Width { get => size.x; }
     public float Height { get => size.y; }
     public float Angle { get => angle; }
@@ -104,4 +106,8 @@ public class Checkpoint : MonoBehaviour
     public Vector3 UVector { get => new Vector3(-Mathf.Cos(Rads), 0, Mathf.Sin(Rads)); }
     public Vector3 VVector { get => Vector3.up; }
     public Vector3 Normal { get => new Vector3(Mathf.Sin(Rads), 0, Mathf.Cos(Rads)); }
+
+    public bool Draw { get => draw; set { draw = value; } }
+    public bool OverrideDrawColor { get => overrideDrawColor; set { overrideDrawColor = value; } }
+    public Color DrawOverrideColor { get => drawOverrideColor; set { drawOverrideColor = value; } }
 }

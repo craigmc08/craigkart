@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class RaceProgress : MonoBehaviour
 {
-    public Checkpoint[] checkpoints;
-    public Checkpoint[] keyCheckpoints;
+    // public Checkpoint[] checkpoints;
+    // public Checkpoint[] keyCheckpoints;
+    public Track track;
 
     public int laps = 0;
     public int currentKeyCheckpoint = 0;
@@ -14,11 +15,19 @@ public class RaceProgress : MonoBehaviour
 
     public float collisionRadius;
 
+    bool playing = false;
+
+    Checkpoint[] checkpoints;
+    Checkpoint[] keyCheckpoints;
+
     // Start is called before the first frame update
     void Start()
     {
+        checkpoints = track.trackCheckpoints.GetCheckpoints();
+        keyCheckpoints = track.trackCheckpoints.GetKeyCheckpoints();
+        playing = true;
         foreach (var checkpoint in checkpoints) {
-            checkpoint.draw = false;
+            checkpoint.Draw = false;
         }
     }
 
@@ -51,10 +60,10 @@ public class RaceProgress : MonoBehaviour
         if (inCheckpoint == -1) {
             int keyCount = -1;
             for (int i = 0; i < checkpoints.Length; i++) {
-                if (checkpoints[i].isKeyCheckpoint) {
+                if (checkpoints[i].IsKeyCheckpoint) {
                     keyCount++;
                 }
-                bool loaded = checkpoints[i].isKeyCheckpoint ? KeyCheckpointLoaded(keyCount) : CheckpointLoaded(keyCount);
+                bool loaded = checkpoints[i].IsKeyCheckpoint ? KeyCheckpointLoaded(keyCount) : CheckpointLoaded(keyCount);
                 if (!loaded) continue;
                 Intersection intrscn = SphereIntersectingCheckpoint(transform.position, collisionRadius, checkpoints[i]);
                 if (intrscn != Intersection.None) {
@@ -109,15 +118,17 @@ public class RaceProgress : MonoBehaviour
 
     private void OnDrawGizmos()
     {
+        if (checkpoints == null || keyCheckpoints == null) return;
+
         int keyCount = -1;
         for (int i = 0; i < checkpoints.Length; i++) {
-            if (checkpoints[i].isKeyCheckpoint) {
+            if (checkpoints[i].IsKeyCheckpoint) {
                 keyCount++;
             }
-            bool loaded = checkpoints[i].isKeyCheckpoint ? KeyCheckpointLoaded(keyCount) : CheckpointLoaded(keyCount);
-            checkpoints[i].draw = loaded;
-            checkpoints[i].overrideDrawColor = (checkpoints[i].isKeyCheckpoint && keyCount == currentKeyCheckpoint) || i == currentCheckpoint;
-            checkpoints[i].drawOverrideColor = checkpoints[i].isKeyCheckpoint ? Color.yellow : Color.green;
+            bool loaded = checkpoints[i].IsKeyCheckpoint ? KeyCheckpointLoaded(keyCount) : CheckpointLoaded(keyCount);
+            checkpoints[i].Draw = !playing || loaded;
+            checkpoints[i].OverrideDrawColor = (checkpoints[i].IsKeyCheckpoint && keyCount == currentKeyCheckpoint) || i == currentCheckpoint;
+            checkpoints[i].DrawOverrideColor = checkpoints[i].IsKeyCheckpoint ? Color.yellow : Color.green;
         }
 
         if (inKeyCheckpoint != -1) Gizmos.color = Color.red;
