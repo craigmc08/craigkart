@@ -21,9 +21,16 @@ public class Checkpoint
     [SerializeField] Vector2 size = new Vector2(1, 1);
     [SerializeField] float angle = 0;
     [SerializeField] bool isKeyCheckpoint = false;
-    [SerializeField] bool draw = true;
+    bool draw = true;
     bool overrideDrawColor = false;
     Color drawOverrideColor = Color.black;
+
+    public Checkpoint(Vector3 center, Vector2 size, float angle, bool isKeyCheckpoint) {
+        this.center = center;
+        this.size = size;
+        this.angle = angle;
+        this.isKeyCheckpoint = isKeyCheckpoint;
+    }
 
     public Corners GetCorners()
     {
@@ -70,17 +77,11 @@ public class Checkpoint
         Gizmos.DrawMesh(mesh);
     }
 
-    // math comes form distance-to-rectangle-notes.txt
+    // math comes from distance-to-rectangle-notes.txt
     public float Distance(Vector3 Q) {
         Vector3 P = Vector3.ProjectOnPlane(Q - Center, Normal);
-        // Gizmos.DrawSphere(P + Center, 0.2f);
-        float i = P.x;
-        float j = P.y;
-        float k = P.z;
-        float lxl = Mathf.Abs(i * Mathf.Cos(Rads) - k * Mathf.Sin(Rads));
-        float lyl = Mathf.Abs(j);
-        // Gizmos.DrawLine(Center, lxl * UVector + Center);
-        // Gizmos.DrawLine(Center, lyl * VVector + Center);
+        float lxl = Mathf.Abs(P.x * Mathf.Cos(Rads) - P.z * Mathf.Sin(Rads));
+        float lyl = Mathf.Abs(P.y);
         float dp = 0;
         if (lyl <= Height / 2 && lxl <= Width / 2) dp = 0;
         else if (lyl <= Height / 2) dp = lxl - Width / 2;
@@ -90,7 +91,6 @@ public class Checkpoint
             float dy = lyl - Height / 2;
             dp = Mathf.Sqrt(dx * dx + dy * dy);
         }
-        // Gizmos.DrawLine(Q, P + Center);
         return Mathf.Sqrt((Q - Center - P).sqrMagnitude + dp*dp);
     }
 

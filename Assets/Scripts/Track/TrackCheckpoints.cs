@@ -19,4 +19,11 @@ public class TrackCheckpoints : ScriptableObject {
         }
         return keyCheckpoints.ToArray();
     }
+
+    public void CleanUpCheckpoints() {
+        foreach (var checkpoint in checkpoints) {
+            checkpoint.OverrideDrawColor = false;
+            checkpoint.Draw = true;
+        }
+    }
 }

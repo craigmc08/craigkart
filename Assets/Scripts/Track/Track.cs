@@ -6,4 +6,8 @@ public class Track : MonoBehaviour {
     void OnDrawGizmos() {
         if (trackCheckpoints != null) trackCheckpoints.DrawGizmos();
     }
+
+    private void OnDisable() {
+        trackCheckpoints.CleanUpCheckpoints();
+    }
 }
