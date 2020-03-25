@@ -4,30 +4,22 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.Events;
+using TMPro;
 
 [RequireComponent(typeof(Image))]
 public class TabButton : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler, IPointerExitHandler
 {
     public TabGroup tabGroup;
+    public TextMeshProUGUI  text;
 
     public UnityEvent onTabSelected;
     public UnityEvent onTabDeselected;
 
     private Image background;
 
-    public Image Background {
-        get { return background; }
-    }
-
-    void Start()
+    void Awake()
     {
         background = GetComponent<Image>();
-        tabGroup.Subscribe(this);
-    }
-
-    void Update()
-    {
-        
     }
 
     public void OnPointerClick(PointerEventData eventData) {
@@ -52,5 +44,10 @@ public class TabButton : MonoBehaviour, IPointerEnterHandler, IPointerClickHandl
         if (onTabDeselected != null) {
             onTabDeselected.Invoke();
         }
+    }
+
+    public void Style(TabStyle style) {
+        background.color = style.tabColor;
+        text.color = style.fontColor;
     }
 }
