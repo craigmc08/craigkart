@@ -63,7 +63,6 @@ public class TabGroup : MonoBehaviour
         }
 
         selectedTab = button;
-        selectedTab.Select();
 
         ResetTabs();
         button.Style(tabActive);
@@ -71,6 +70,7 @@ public class TabGroup : MonoBehaviour
         for (int i = 0; i < tabs.Count; i++) {
             tabs[i].SetActive(i == index);
         }
+        selectedTab.Select();
     }
 
     public void ResetTabs() {
