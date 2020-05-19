@@ -6,6 +6,6 @@ using UnityEngine.SceneManagement;
 public class ButtonLoadScene : MonoBehaviour
 {
     public void LoadTimeTrial() {
-        SceneManager.LoadScene("ForestTrack");
+        SceneManager.LoadSceneAsync("ForestTrack");
     }
 }

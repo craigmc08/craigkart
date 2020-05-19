@@ -14,8 +14,7 @@ public class BlurPanel : Image
 
     CanvasGroup canvasGroup;
 
-    protected override void Reset() {
-        base.Reset();
+    protected void Reset() {
         color = Color.black * 0.1f;
     }
 

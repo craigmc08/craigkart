@@ -25,6 +25,7 @@ public class TimeTrialManager : MonoBehaviour
     private void Start() {
         startAt = Time.time + 3f;
         playerController.controllable = false;
+        playerController.runPhysics = false;
     }
 
     private void Update() {
@@ -32,6 +33,7 @@ public class TimeTrialManager : MonoBehaviour
             if (Time.time >= startAt) {
                 raceInProgress = true;
                 playerController.controllable = true;
+                playerController.runPhysics = true;
             }
 
             return;
@@ -45,6 +47,7 @@ public class TimeTrialManager : MonoBehaviour
             raceInProgress = false; // End race
             finishedRace = true;
             playerController.controllable = false;
+            // Don't stop physics, let player slow down to a stop
             lap = 3;
         }
     }

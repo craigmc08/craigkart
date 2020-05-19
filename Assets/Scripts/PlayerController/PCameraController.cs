@@ -72,12 +72,14 @@ public class PCameraController : MonoBehaviour
     public void OnCameraSwivel(InputValue value)
     {
         m_CameraSwivel = value.Get<Vector2>();
+        if (!controller.controllable) m_CameraSwivel = Vector2.zero;
         Debug.Log(m_CameraSwivel);
     }
 
     public void OnLookBack(InputValue value)
     {
         m_LookBack = value.Get<float>() > 0.5f;   
+        if (!controller.controllable) m_LookBack = false;
         Debug.Log(m_LookBack);
     }
 }

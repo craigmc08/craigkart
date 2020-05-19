@@ -122,6 +122,7 @@ public class PDriverController : MonoBehaviour
     float turboBoost = 0;
 
     public bool controllable = false;
+    public bool runPhysics = false;
 
     private void Start()
     {
@@ -132,9 +133,7 @@ public class PDriverController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (!controllable)  {
-            return;
-        }
+        if (!runPhysics) return;
 
         canUltraTurbo = !insideDrift;
 
@@ -326,31 +325,37 @@ public class PDriverController : MonoBehaviour
     public void OnAccelerate(InputValue value)
     {
         m_Accelerate = value.Get<float>();
+        if (!controllable) m_Accelerate = 0;
     }
 
     public void OnDecelerate(InputValue value)
     {
         m_Decelerate = value.Get<float>();
+        if (!controllable) m_Decelerate = 0;
     }
 
     public void OnSteer(InputValue value)
     {
         m_Steer = value.Get<float>();
+        if (!controllable) m_Steer = 0;
     }
 
     public void OnHop(InputValue value)
     {
         m_Hop = value.Get<float>() > 0.5f;
+        if (!controllable) m_Hop = false;
     }
 
     public void OnLean(InputValue value)
     {
         m_Lean = value.Get<Vector2>();
+        if (!controllable) m_Lean = Vector2.zero;
     }
 
     public void OnTrick(InputValue value)
     {
         m_Trick = value.Get<float>() > 0.5f;
+        if (!controllable) m_Trick = false;
     }
 
     bool IsInLayerMask(LayerMask mask, int layer)
@@ -366,7 +371,7 @@ public class PDriverController : MonoBehaviour
     private ContactPoint[] surfaceContactsThisUpdate = new ContactPoint[64];
     public void OnCollisionStay(Collision col)
     {
-        if (!controllable) return;
+        if (!runPhysics) return;
 
         if (IsInLayerMask(groundLayerMask, col.gameObject.layer)) {
             grounded = true;
@@ -409,7 +414,7 @@ public class PDriverController : MonoBehaviour
 
     void UpdateSurfaceContacts()
     {
-        if (!controllable) return;
+        if (!runPhysics) return;
 
         // No contacts this update
         if (surfaceContactLength == 0)
@@ -462,20 +467,4 @@ public class PDriverController : MonoBehaviour
     {
         get => !insideDrift;
     }
-
-    //public void OnCollisionEnter(Collision col)
-    //{
-    //    if (IsInLayerMask(groundLayerMask, col.gameObject.layer))
-    //    {
-    //        grounded = true;
-    //    }
-    //}
-
-    //public void OnCollisionExit(Collision col)
-    //{
-    //    if (IsInLayerMask(groundLayerMask, col.gameObject.layer))
-    //    {
-    //        grounded = false;
-    //    }
-    //}
 }
