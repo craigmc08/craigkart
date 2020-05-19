@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class TimeTrialManager : MonoBehaviour
 {
@@ -8,6 +9,7 @@ public class TimeTrialManager : MonoBehaviour
 
     public RaceProgress playerProgress;
     public PDriverController playerController;
+    public float timeUntilLoadMenu = 5f;
 
     public bool raceInProgress = false;
     public bool finishedRace = false;
@@ -15,6 +17,8 @@ public class TimeTrialManager : MonoBehaviour
     
     public float startAt = 0;
     public float finishedTime = 0;
+
+    public float finishedAt = 0;
 
     private void Awake() {
         if (instance == null) {
@@ -29,6 +33,11 @@ public class TimeTrialManager : MonoBehaviour
     }
 
     private void Update() {
+        if (finishedRace && (Time.time - finishedAt >= timeUntilLoadMenu)) {
+            SceneManager.LoadSceneAsync("Menu");
+            return;
+        }
+
         if (!raceInProgress && Time.time < startAt + Time.deltaTime) {
             if (Time.time >= startAt) {
                 raceInProgress = true;
@@ -42,8 +51,9 @@ public class TimeTrialManager : MonoBehaviour
         lap = playerProgress.laps + 1; // Player progress starts with 0 laps
         if (lap < 1) lap = 1;
 
-        if (lap > 3) {
+        if (lap > 3 && !finishedRace) {
             finishedTime = Timer;
+            finishedAt = Time.time;
             raceInProgress = false; // End race
             finishedRace = true;
             playerController.controllable = false;
