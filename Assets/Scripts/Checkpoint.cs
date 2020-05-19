@@ -25,6 +25,8 @@ public class Checkpoint
     bool overrideDrawColor = false;
     Color drawOverrideColor = Color.black;
 
+    public Vector3 scale = Vector3.one;
+
     public Checkpoint(Vector3 center, Vector2 size, float angle, bool isKeyCheckpoint) {
         this.center = center;
         this.size = size;
@@ -37,10 +39,10 @@ public class Checkpoint
         float rads = angle * Mathf.Deg2Rad;
         Vector3 tangent = UVector;
         Vector3 bitangent = VVector;
-        Vector3 left = center - size.x * tangent / 2;
-        Vector3 right = center + size.x * tangent / 2;
-        Vector3 top = size.y * bitangent / 2;
-        Vector3 bottom = -size.y * bitangent / 2;
+        Vector3 left = Center - Width * tangent / 2;
+        Vector3 right = Center + Width * tangent / 2;
+        Vector3 top = Height * bitangent / 2;
+        Vector3 bottom = -Height * bitangent / 2;
         return new Corners
         {
             TopLeft = left + top,
@@ -94,9 +96,15 @@ public class Checkpoint
         return Mathf.Sqrt((Q - Center - P).sqrMagnitude + dp*dp);
     }
 
-    public Vector3 Center { get => center; }
-    public float Width { get => size.x; }
-    public float Height { get => size.y; }
+    public Vector3 Center { get => new Vector3(center.x * scale.x, center.y * scale.y, center.z * scale.z); }
+    
+    public float Width { get {
+        var z = Mathf.Sin(Rads) * size.x * scale.z;
+        var x = Mathf.Cos(Rads) * size.x * scale.x;
+
+        return Mathf.Sqrt(z * z + x * x);
+    } }
+    public float Height { get => size.y * scale.y; }
     public float Angle { get => angle; }
     public float Rads { get => angle * Mathf.Deg2Rad; }
     public bool IsKeyCheckpoint { get => isKeyCheckpoint; }

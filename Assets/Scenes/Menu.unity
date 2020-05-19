@@ -1065,7 +1065,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   duration: 0.2
-  delay: 0.2
+  delay: 0.1
 --- !u!1 &690178636
 GameObject:
   m_ObjectHideFlags: 0
@@ -1531,7 +1531,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   duration: 0.2
-  delay: 0.4
+  delay: 0.2
 --- !u!1 &936492755
 GameObject:
   m_ObjectHideFlags: 0
@@ -2554,7 +2554,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   duration: 0.2
-  delay: 0.1
+  delay: 0.05
 --- !u!1 &1354999793
 GameObject:
   m_ObjectHideFlags: 0
@@ -3374,7 +3374,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   duration: 0.2
-  delay: 0.1
+  delay: 0.05
 --- !u!1 &1809944054
 GameObject:
   m_ObjectHideFlags: 0
@@ -3619,7 +3619,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   duration: 0.2
-  delay: 0.3
+  delay: 0.15
 --- !u!1 &1896439908
 GameObject:
   m_ObjectHideFlags: 0
@@ -3771,7 +3771,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   duration: 0.2
-  delay: 0.2
+  delay: 0.1
 --- !u!1 &1915041225
 GameObject:
   m_ObjectHideFlags: 0
@@ -4385,7 +4385,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   duration: 0.2
-  delay: 0.1
+  delay: 0.05
 --- !u!1 &2020925878
 GameObject:
   m_ObjectHideFlags: 0

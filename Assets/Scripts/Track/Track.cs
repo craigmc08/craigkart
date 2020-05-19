@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[ExecuteInEditMode]
 public class Track : MonoBehaviour {
     public TrackCheckpoints trackCheckpoints;
     
@@ -9,5 +10,11 @@ public class Track : MonoBehaviour {
 
     private void OnDisable() {
         trackCheckpoints.CleanUpCheckpoints();
+    }
+
+    void Update() {
+        foreach (var c in trackCheckpoints.GetCheckpoints()) {
+            c.scale = transform.localScale;
+        }
     }
 }
