@@ -10,8 +10,8 @@ public class EngineFlameBehavior : MonoBehaviour
     {
         foreach (var q in nitroParticles)
         {
-            if (p.turboing) q.Play();
-            else q.Stop(false, ParticleSystemStopBehavior.StopEmitting);
+            if (p.turboing && !q.isPlaying) q.Play();
+            else if (!p.turboing && q.isPlaying) q.Stop(false, ParticleSystemStopBehavior.StopEmitting);
         }
     }
 }

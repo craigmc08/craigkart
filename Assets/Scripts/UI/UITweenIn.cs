@@ -10,7 +10,7 @@ public class UITweenIn : MonoBehaviour
 
     RectTransform rectTransform;
 
-    void OnEnable() {
+    void Awake() {
         rectTransform = GetComponent<RectTransform>();    
     }
 

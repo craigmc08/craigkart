@@ -121,6 +121,8 @@ public class PDriverController : MonoBehaviour
     float turboDuration = 0;
     float turboBoost = 0;
 
+    public bool controllable = false;
+
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -130,6 +132,10 @@ public class PDriverController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (!controllable)  {
+            return;
+        }
+
         canUltraTurbo = !insideDrift;
 
         var velocity = rb.velocity;
@@ -360,6 +366,8 @@ public class PDriverController : MonoBehaviour
     private ContactPoint[] surfaceContactsThisUpdate = new ContactPoint[64];
     public void OnCollisionStay(Collision col)
     {
+        if (!controllable) return;
+
         if (IsInLayerMask(groundLayerMask, col.gameObject.layer)) {
             grounded = true;
             var surface = col.gameObject.GetComponent<Surface>();
@@ -375,7 +383,7 @@ public class PDriverController : MonoBehaviour
             {
                 if (surfaceContactLength >= surfaceContactsThisUpdate.Length)
                 {
-                    Debug.LogError("Surface Contact buffer out of space");
+                    Debug.LogWarning("Surface Contact buffer out of space");
                 } else
                 {
                     surfaceContactsThisUpdate[surfaceContactLength] = surfaceContacts[i];
@@ -386,7 +394,7 @@ public class PDriverController : MonoBehaviour
                 {
                     if (groundContactLength >= groundContactsThisUpdate.Length)
                     {
-                        Debug.LogError("Ground Contact buffer out of space");
+                        Debug.LogWarning("Ground Contact buffer out of space");
                     }
                     else
                     {
@@ -401,6 +409,8 @@ public class PDriverController : MonoBehaviour
 
     void UpdateSurfaceContacts()
     {
+        if (!controllable) return;
+
         // No contacts this update
         if (surfaceContactLength == 0)
         {

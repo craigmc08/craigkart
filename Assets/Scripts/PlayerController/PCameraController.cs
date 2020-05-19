@@ -7,6 +7,8 @@ public class PCameraController : MonoBehaviour
 {
     [Range(0,1)]
     public float cameraUpSmoothing = 0.8f;
+    [Range(0, 1)]
+    public float cameraUpLimit;
 
     public Vector2 swivelSpan;
     public float yRestAngle;
@@ -38,7 +40,8 @@ public class PCameraController : MonoBehaviour
     void Update()
     {
         groundNormal = Vector3.Slerp(controller.GroundUp, groundNormal, cameraUpSmoothing);
-        Quaternion emptyRot = Quaternion.LookRotation(Vector3.ProjectOnPlane(controller.KartForward, groundNormal).normalized, groundNormal);
+        var cameraUp = Vector3.Slerp(Vector3.up, groundNormal, cameraUpLimit);
+        Quaternion emptyRot = Quaternion.LookRotation(Vector3.ProjectOnPlane(controller.KartForward, cameraUp).normalized, cameraUp);
         cameraRotationEmpty.rotation = emptyRot;
 
         cameraSwivelValue = Vector2.Lerp(cameraSwivelValue, m_CameraSwivel, 1f - smoothing);
