@@ -89,18 +89,9 @@ public class TimeTrialManager : MonoBehaviour
             // Don't stop physics, let player slow down to a stop
 
             lap = 3;
-
-            float bestLap = lapTimes[0];
-            for (int i = 1; i < lapTimes.Length; i++) {
-                if (lapTimes[i] < bestLap) bestLap = lapTimes[i];
-            }
-            stats.races.Add(new RaceData(bestLap, finishedTime));
-            SaveData();
         }
 
-        if (finishedRace && !lastFinished) {
-            audioSource.PlayOneShot(finishSound);
-        } else if (lap > lastLap) {
+        if (lap > lastLap) {
             highestCompletedLap = lastLap;
             audioSource.PlayOneShot(lapCountSound);
 
@@ -112,6 +103,16 @@ public class TimeTrialManager : MonoBehaviour
             }
 
             lapTimes[lastLap - 1] = Timer - previousLapSum;
+        }
+
+        if (finishedRace && !lastFinished) {
+            float bestLap = lapTimes[0];
+            for (int i = 1; i < lapTimes.Length; i++) {
+                if (lapTimes[i] < bestLap) bestLap = lapTimes[i];
+            }
+            stats.races.Add(new RaceData(bestLap, finishedTime));
+            
+            SaveData();
         }
     }
 
