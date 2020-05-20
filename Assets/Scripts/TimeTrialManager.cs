@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.IO;
 
 [RequireComponent(typeof(AudioSource))]
 public class TimeTrialManager : MonoBehaviour
@@ -30,6 +31,11 @@ public class TimeTrialManager : MonoBehaviour
 
     AudioSource audioSource;
 
+    public float[] lapTimes { get; private set; }
+    public int highestCompletedLap { get; private set; }
+
+    public static TimeTrialData stats = new TimeTrialData();
+
     private void Awake() {
         if (instance == null) {
             instance = this;
@@ -46,6 +52,10 @@ public class TimeTrialManager : MonoBehaviour
         audioSource.PlayOneShot(countdownSound);
 
         playerController.GetComponent<PItemController>().GiveItem(new Items.TripleBoost());
+
+        lapTimes = new float[3];
+
+        LoadData();
     }
 
     private void Update() {
@@ -79,12 +89,29 @@ public class TimeTrialManager : MonoBehaviour
             // Don't stop physics, let player slow down to a stop
 
             lap = 3;
+
+            float bestLap = lapTimes[0];
+            for (int i = 1; i < lapTimes.Length; i++) {
+                if (lapTimes[i] < bestLap) bestLap = lapTimes[i];
+            }
+            stats.races.Add(new RaceData(bestLap, finishedTime));
+            SaveData();
         }
 
         if (finishedRace && !lastFinished) {
             audioSource.PlayOneShot(finishSound);
-        } else if (lastLap != lap) {
+        } else if (lap > lastLap) {
+            highestCompletedLap = lastLap;
             audioSource.PlayOneShot(lapCountSound);
+
+            // All initialized to zero, so the previous times sum
+            // is the total of the lap times array.
+            float previousLapSum = 0;
+            for (int i = 0; i < lapTimes.Length; i++) {
+                previousLapSum += lapTimes[i];
+            }
+
+            lapTimes[lastLap - 1] = Timer - previousLapSum;
         }
     }
 
@@ -100,5 +127,51 @@ public class TimeTrialManager : MonoBehaviour
         get {
             return startAt - Time.time;
         }
+    }
+
+    public void LoadData() {
+        string destination = Application.persistentDataPath + "/timetrials.json";
+        StreamReader file;
+
+        if (File.Exists(destination)) file = new StreamReader(destination);
+        else {
+            stats = new TimeTrialData();
+            return;
+        }
+
+        stats = JsonUtility.FromJson<TimeTrialData>(file.ReadToEnd());
+        if (stats == null) stats = new TimeTrialData();
+        file.Close();
+    }
+
+    public void SaveData() {
+        string destination = Application.persistentDataPath + "/timetrials.json";
+        StreamWriter file;
+
+        file = new StreamWriter(destination);
+
+        var output = JsonUtility.ToJson(stats);
+        file.Write(output);
+        file.Close();
+    }
+}
+
+[System.Serializable]
+public class TimeTrialData {
+    public List<RaceData> races;
+
+    public TimeTrialData() {
+        races = new List<RaceData>();
+    }
+}
+
+[System.Serializable]
+public class RaceData {
+    public float bestLap;
+    public float time;
+
+    public RaceData(float bestLap, float time) {
+        this.bestLap = bestLap;
+        this.time = time;
     }
 }
