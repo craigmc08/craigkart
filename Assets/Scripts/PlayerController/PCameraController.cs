@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 public class PCameraController : MonoBehaviour
 {
     [Range(0,1)]
-    public float cameraUpSmoothing = 0.8f;
+    public float directionSmoothing = 0.8f;
     [Range(0, 1)]
     public float cameraUpLimit;
 
@@ -18,7 +18,7 @@ public class PCameraController : MonoBehaviour
     public float zOffset;
 
     [Range(0f, 1f)]
-    public float smoothing = 0.2f;
+    public float swivelSmoothing = 0.2f;
 
     public Transform playerCamera;
     public Transform cameraRotationEmpty;
@@ -36,15 +36,21 @@ public class PCameraController : MonoBehaviour
         controller = GetComponent<PDriverController>();
     }
 
-    Vector3 groundNormal = Vector3.up;
+    Quaternion lastEmptyRot = default;
     void Update()
     {
-        groundNormal = Vector3.Slerp(controller.GroundUp, groundNormal, cameraUpSmoothing);
-        var cameraUp = Vector3.Slerp(Vector3.up, groundNormal, cameraUpLimit);
+        var cameraUp = Vector3.Slerp(Vector3.up, controller.GroundUp, cameraUpLimit);
         Quaternion emptyRot = Quaternion.LookRotation(Vector3.ProjectOnPlane(controller.KartForward, cameraUp).normalized, cameraUp);
+
+        if (lastEmptyRot == default) {
+            lastEmptyRot = emptyRot;
+        }
+        emptyRot = Quaternion.Slerp(emptyRot, lastEmptyRot, directionSmoothing);
+        lastEmptyRot = emptyRot;
+
         cameraRotationEmpty.rotation = emptyRot;
 
-        cameraSwivelValue = Vector2.Lerp(cameraSwivelValue, m_CameraSwivel, 1f - smoothing);
+        cameraSwivelValue = Vector2.Lerp(cameraSwivelValue, m_CameraSwivel, 1f - swivelSmoothing);
 
         float yAngle = -cameraSwivelValue.y * swivelSpan.y * Mathf.Deg2Rad / 2 + yRestAngle * Mathf.Deg2Rad;
         float xAngle = -cameraSwivelValue.x * swivelSpan.x * Mathf.Deg2Rad / 2;
