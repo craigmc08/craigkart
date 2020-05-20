@@ -8,4 +8,8 @@ public class ButtonLoadScene : MonoBehaviour
     public void LoadTimeTrial() {
         SceneManager.LoadSceneAsync("ForestTrack");
     }
+
+    public void Quit() {
+        Application.Quit();
+    }
 }
