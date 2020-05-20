@@ -44,6 +44,8 @@ public class TimeTrialManager : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
 
         audioSource.PlayOneShot(countdownSound);
+
+        playerController.GetComponent<PItemController>().GiveItem(new Items.TripleBoost());
     }
 
     private void Update() {

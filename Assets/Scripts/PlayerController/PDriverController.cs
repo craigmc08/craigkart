@@ -80,6 +80,11 @@ public class PDriverController : MonoBehaviour
     [Tooltip("Multiplier on base speed while mini/super/ultra-turboing")]
     public float miniturboBoost = 2f;
 
+    [Header("Boosts")]
+    public float boostDuration = 2f;
+    [Tooltip("Multiplier on base speed while boosting")]
+    public float boostAmount = 2.5f;
+
     [Header("Physics")]
     [Range(0,1)]
     [Tooltip("How fast the surface normal can change")]
@@ -466,5 +471,12 @@ public class PDriverController : MonoBehaviour
     public bool OutsideDrift
     {
         get => !insideDrift;
+    }
+
+    public void StartBoost() {
+        turboActivated = true;
+        turboStartedAt = Time.time;
+        turboDuration = boostDuration;
+        turboBoost = boostAmount;
     }
 }
